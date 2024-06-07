@@ -13,15 +13,14 @@ class Stock(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
-if not os.path.exists('stocks.db'):
-    db.create_all()
+
 
 def save_model(stock_name, model):
-    with open(f'models/{stock_name}_arima.pkl', 'wb') as f:
+    with open(f'modelstore/{stock_name}_arima.pkl', 'wb') as f:
         pickle.dump(model, f)
 
 def load_model(stock_name):
-    with open(f'models/{stock_name}_arima.pkl', 'rb') as f:
+    with open(f'modelstore/{stock_name}_arima.pkl', 'rb') as f:
         model = pickle.load(f)
     return model
 
@@ -48,7 +47,7 @@ def predict():
     if not stock:
         return jsonify({'error': 'Stock not found'}), 404
 
-    stock_data = data.get('data')  # Assuming stock data is provided in the request
+    stock_data = data.get('data')
     if not stock_data:
         return jsonify({'error': 'Stock data is required'}), 400
 
@@ -58,16 +57,16 @@ def predict():
     df.set_index('date', inplace=True)
 
     # Train ARIMA model
-    model = ARIMA(df['price'], order=(5, 1, 0))  # Example order, should be optimized
+    model = ARIMA(df['price'], order=(5, 1, 0)) # params: num lag observations. num times raw observations are differened, size of moving average window
     model_fit = model.fit()
 
     # Save model
     save_model(stock_name, model_fit)
 
-    forecast = model_fit.forecast(steps=5)  # Example forecast for next 5 steps
+    forecast = model_fit.forecast(steps=5)
     return jsonify({'forecast': forecast.tolist()}), 200
 
 if __name__ == '__main__':
-    if not os.path.exists('models'):
-        os.makedirs('models')
+    if not os.path.exists('modelstore'):
+        os.makedirs('modelstore')
     app.run(debug=True)
