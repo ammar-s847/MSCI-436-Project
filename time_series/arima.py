@@ -55,3 +55,7 @@ def train_arima_model(ticker: str) -> Tuple[ARIMAResults, float]:
     
     return final_model_fit, mse
     
+def predict_arima(ticker: str, steps: int) -> pd.DataFrame:
+    '''Predicts stock prices using ARIMA model.'''
+    model = load_arima_model(ticker)
+    return model.forecast(steps=steps)
