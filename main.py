@@ -78,4 +78,5 @@ def load():
 
 
 if __name__ == '__main__':
+    # schedule.every(10).minutes.do(job)
     app.run(debug=True)
