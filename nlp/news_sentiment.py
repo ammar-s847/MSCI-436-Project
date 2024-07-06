@@ -23,6 +23,8 @@ def analyze_sentiment(news_data):
     num_neutral = 0
     num_negative = 0
 
+    news_articles = []
+
     for article in news_data:
         combined_text = article['headline'] + " " + article['summary']
         prediction = sentiment_pipeline(combined_text)[0]
@@ -38,6 +40,14 @@ def analyze_sentiment(news_data):
             # Default to neutral if model confidence is low
             num_neutral += 1
 
+        news_articles.append({
+                    "headline": article['headline'],
+                    "description": article['summary'],
+                    "timestamp": article['datetime'],
+                    "sentiment": prediction['label'],
+                    "url": article['url']
+                })
+
     # Determine the overall sentiment based on the highest count
     if num_positive > num_neutral and num_positive > num_negative:
         overall_sentiment = 'positive'
@@ -47,8 +57,6 @@ def analyze_sentiment(news_data):
         overall_sentiment = 'neutral'
 
     return {
-        "num_positive": num_positive,
-        "num_neutral": num_neutral,
-        "num_negative": num_negative,
-        "overall_sentiment": overall_sentiment
+        "overall_sentiment": overall_sentiment,
+        "news_articles": news_articles
     }
