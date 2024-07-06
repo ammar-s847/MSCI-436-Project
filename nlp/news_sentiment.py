@@ -14,8 +14,8 @@ sentiment_pipeline = pipeline("sentiment-analysis", model="mrm8488/distilroberta
 
 def load_news_data(ticker):
     current_date = datetime.now()
-    one_year_prior = current_date - timedelta(days=365)
-    news_data = finnhub_client.company_news(ticker, _from=one_year_prior.strftime("%Y-%m-%d"), to=current_date.strftime("%Y-%m-%d"))
+    from_date = current_date - timedelta(days=1)
+    news_data = finnhub_client.company_news(ticker, _from=from_date.strftime("%Y-%m-%d"), to=current_date.strftime("%Y-%m-%d"))
     return news_data
 
 def analyze_sentiment(news_data):
