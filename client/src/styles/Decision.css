@@ -1,0 +1,23 @@
+.outcome {
+    color: white;
+    padding: 16px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 2px solid;
+  }
+  
+  .outcome.buy {
+    background-color: #90ee90;
+    border-color: #213421;
+  }
+  
+  .outcome.sell {
+    background-color: #f08080;
+    border-color: #500808;
+  }
+  
+  .outcome.hold {
+    background-color: #ffd700;
+    border-color: #544700;
+  }

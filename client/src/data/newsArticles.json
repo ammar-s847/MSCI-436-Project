@@ -1,0 +1,61 @@
+{
+    "news_articles": [
+      {
+        "headline": "Example Headline 1",
+        "description": "This is the description for the first news article.",
+        "timestamp": 1625097600,
+        "sentiment": "positive",
+        "url": "https://example.com/article1"
+      },
+      {
+        "headline": "Example Headline 2",
+        "description": "This is the description for the second news article.",
+        "timestamp": 1625184000,
+        "sentiment": "neutral",
+        "url": "https://example.com/article2"
+      },
+      {
+        "headline": "Example Headline 1",
+        "description": "This is the description for the first news article.",
+        "timestamp": 1625097600,
+        "sentiment": "positive",
+        "url": "https://example.com/article1"
+      },
+      {
+        "headline": "Example Headline 2",
+        "description": "This is the description for the second news article.",
+        "timestamp": 1625184000,
+        "sentiment": "neutral",
+        "url": "https://example.com/article2"
+      },
+      {
+        "headline": "Example Headline 1",
+        "description": "This is the description for the first news article.",
+        "timestamp": 1625097600,
+        "sentiment": "positive",
+        "url": "https://example.com/article1"
+      },
+      {
+        "headline": "Example Headline 2",
+        "description": "This is the description for the second news article.",
+        "timestamp": 1625184000,
+        "sentiment": "neutral",
+        "url": "https://example.com/article2"
+      },
+      {
+        "headline": "Example Headline 1",
+        "description": "This is the description for the first news article.",
+        "timestamp": 1625097600,
+        "sentiment": "positive",
+        "url": "https://example.com/article1"
+      },
+      {
+        "headline": "Example Headline 2",
+        "description": "This is the description for the second news article.",
+        "timestamp": 1625184000,
+        "sentiment": "neutral",
+        "url": "https://example.com/article2"
+      }
+    ]
+  }
+  

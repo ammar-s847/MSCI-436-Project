@@ -1,0 +1,22 @@
+.Container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .Grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .Grid-item {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .Box img {
+    max-width: 100%;
+    height: auto;
+  }
+  
