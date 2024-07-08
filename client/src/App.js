@@ -6,8 +6,10 @@ import Dashboard from "./components/Dashboard";
 
 function App() {
   const [showDashboard, setShowDashboard] = useState(false);
+  const [symbol, setSymbol] = useState("");
 
-  const handleSearchComplete = () => {
+  const handleSearchComplete = (newSymbol) => {
+    setSymbol(newSymbol);
     setShowDashboard(true);
   };
 
@@ -15,7 +17,7 @@ function App() {
     <div className="App">
       <Header />
       <Hero onSearchComplete={handleSearchComplete} />
-      {showDashboard && <Dashboard />}
+      {showDashboard && <Dashboard symbol={symbol} />}
     </div>
   );
 }
