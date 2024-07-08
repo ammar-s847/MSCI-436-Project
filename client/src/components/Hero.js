@@ -5,28 +5,28 @@ import "../styles/Hero.css";
 const Hero = ({ onSearchComplete }) => {
   const [data, setData] = useState(null);
   const [query, setQuery] = useState("");
+  const [hideTitle, setHideTitle] = useState(true);
 
-  // Post request
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
 
   const handleSearch = (e) => {
-    onSearchComplete();
     e.preventDefault();
     console.log("Search input:", query);
+    setHideTitle(false);
+    onSearchComplete(query);
     api
       .post("/search", { query }) // Replace search with endpoint
       .then((response) => {
         console.log("Search result:", response.data);
-        onSearchComplete(); // Notify App component that search is complete
+        // onSearchComplete(query);
       })
       .catch((error) => {
         console.error("Error performing search:", error);
       });
   };
 
-  // Get request
   useEffect(() => {
     api
       .get("/endpoint")
@@ -40,7 +40,7 @@ const Hero = ({ onSearchComplete }) => {
 
   return (
     <main className="App-main">
-      <h1 className="title">Welcome to Stocker!</h1>
+      {hideTitle && <h1 className="title">Welcome to Stocker!</h1>}
       <p>Search for your favourite stocks and make smarter decisions</p>
       <form className="search-form" onSubmit={handleSearch}>
         <input
