@@ -1,3 +1,4 @@
+# TODO: implement multithreaded workers to enable multiple stock tracking
 import time
 import threading
 from typing import List

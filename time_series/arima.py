@@ -5,6 +5,7 @@ from sklearn.metrics import mean_squared_error
 import pickle
 import yfinance as yf
 
+
 def load_arima_model(ticker: str) -> ARIMAResults:
     '''Retrieves a trained ARIMA model from disk.'''
     with open(f'{ticker}_arima_model.pkl', 'rb') as pkl_file:
