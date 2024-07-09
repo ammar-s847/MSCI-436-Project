@@ -2,10 +2,12 @@ import finnhub
 from datetime import datetime, timedelta
 from transformers import pipeline
 import yfinance as yf
+from dotenv import load_dotenv
 import os
 import re
 
 # Initialize Finnhub client
+load_dotenv('.env')
 finnhub_api_key = os.getenv("FINNHUB_API_KEY")
 if not finnhub_api_key:
     raise ValueError("No FINNHUB_API_KEY found in environment variables")

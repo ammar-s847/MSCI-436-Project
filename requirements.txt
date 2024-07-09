@@ -42,3 +42,6 @@ webencodings==0.5.1
 Werkzeug==3.0.3
 wsproto==1.2.0
 yfinance==0.2.40
+finnhub-python==2.4.20
+transformers==4.42.3
+tf-keras==2.16.0
