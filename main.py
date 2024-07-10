@@ -16,8 +16,11 @@ from time_series.data import (
     fetch_data, 
     fetch_most_recent_data,
 )
-
-from nlp.news_sentiment import get_company_name, load_news_data, analyze_sentiment
+from nlp.news_sentiment import (
+    get_company_name, 
+    load_news_data, 
+    analyze_sentiment,
+)
 
 app = Flask(__name__)
 garch_model = None
