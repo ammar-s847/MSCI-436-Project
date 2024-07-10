@@ -1,19 +1,25 @@
-import socket
+import time
+import threading
+import socketio
 
-def client():
-  host = socket.gethostname()  # get local machine name
-  port = 8080  # Make sure it's within the > 1024 $$ <65535 range
-  
-  s = socket.socket()
-  s.connect((host, port))
-  
-  message = input('-> ')
-  while message != 'q':
-    s.send(message.encode('utf-8'))
-    data = s.recv(1024).decode('utf-8')
-    print('Received from server: ' + data)
-    message = input('==> ')
-  s.close()
+sio = socketio.Client(engineio_logger=True)
 
-if __name__ == '__main__':
-  client()
+def scheduled_function():
+    return "Hello, this is the scheduled function output!"
+
+def job():
+    while True:
+        output = scheduled_function()
+        sio.emit('inference', {'data': output}, namespace='/schedule')
+        print(output)
+        time.sleep(60)  # wait for 1 minute
+
+def start_socket_connection():
+    sio.connect('http://127.0.0.1:5000', namespaces=['/schedule'])
+    sio.wait()
+
+if __name__ == "__main__":
+    sio.connect('http://127.0.0.1:5000', namespaces=['/schedule'])
+    job_thread = threading.Thread(target=job, daemon=True)
+    job_thread.start()
+    sio.wait()
