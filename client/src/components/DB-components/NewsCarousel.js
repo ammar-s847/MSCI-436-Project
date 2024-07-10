@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import newsData from "../../data/newsArticles.json";
+import newsData from "../../data/backendLoad.json";
 import "../../styles/NewsCarousel.css";
 
 const NewsCarousel = () => {
@@ -14,13 +14,13 @@ const NewsCarousel = () => {
   const getSentimentColor = (sentiment) => {
     switch (sentiment) {
       case "positive":
-        return "green";
+        return "#0EF2CC";
       case "neutral":
-        return "gray";
+        return "#DBCB3C";
       case "negative":
-        return "red";
+        return "#FF5A5A";
       default:
-        return "black";
+        return "white";
     }
   };
 

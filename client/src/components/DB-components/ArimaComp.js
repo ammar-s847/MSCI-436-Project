@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import predictionsData from "../../data/timeSeriesPredictions.json";
+import predictionsData from "../../data/backendLoad.json";
 import "../../styles/Comparisons.css";
 
 const ArimaComp = () => {

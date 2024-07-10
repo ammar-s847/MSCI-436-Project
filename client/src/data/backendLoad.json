@@ -1,15 +1,26 @@
-{
-    "news_articles": [
+  {
+    "ticker_name": "TSLA",
+    "company_name": "Tesla",
+    "timestamp": 0,
+    "decision": "HOLD",
+    "time_series_predictions": {
+      "arima": 130.53,
+      "garch": 90.89
+    },
+    "implied_volatility": 23.53,
+    "historical_volatility": 23.4,
+    "overall_sentiment": "Bad",
+   "news_articles": [
       {
         "headline": "Example Headline 1",
-        "description": "This is the description for the first news article.",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
         "timestamp": 1625097600,
         "sentiment": "positive",
         "url": "https://example.com/article1"
       },
       {
         "headline": "Example Headline 2",
-        "description": "This is the description for the second news article.",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
         "timestamp": 1625184000,
         "sentiment": "neutral",
         "url": "https://example.com/article2"
