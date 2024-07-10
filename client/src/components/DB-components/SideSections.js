@@ -20,7 +20,7 @@ const SideSections = () => {
   }, []);
 
   const getColorForPrediction = (value) => {
-    if (value == "Bad") {
+    if (value == "Negative") {
       return "#FF5A5A";
     } else if (value == "Neutral") {
       return "#DBCB3C";

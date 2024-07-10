@@ -1,28 +1,36 @@
 .carousel .carousel-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 20px;
   background-color: #dddcdc2c;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: left;
+  height: 100%; /* Ensures all items take up the same height */
 }
 
 .carousel .carousel-item h2 {
   margin: 0;
-  font-size: 1.1em;
+  font-size: 1em;
+  flex-shrink: 0; 
 }
 
 .carousel .carousel-item p {
-  font-size: 1em;
+  font-size: .8em;
   margin: 10px 0;
+  flex-grow: 1; 
 }
 
 .carousel .carousel-item a {
   color: #8686ff;
   text-decoration: none;
+  align-self: flex-start; 
 }
 
 .carousel .carousel-item span {
   font-weight: bold;
+  flex-shrink: 0; 
 }
 
 .carousel .carousel-status {
@@ -42,4 +50,5 @@
   bottom: 0;
   margin-top: 0;
   padding: 5px;
+    flex-shrink: 0; 
 }

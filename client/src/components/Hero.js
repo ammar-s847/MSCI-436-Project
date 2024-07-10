@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import "../styles/Hero.css";
 
 const Hero = ({ onSearchComplete }) => {
-  const [data, setData] = useState(null);
   const [query, setQuery] = useState("");
   const [hideTitle, setHideTitle] = useState(true);
 
@@ -20,7 +19,6 @@ const Hero = ({ onSearchComplete }) => {
       .post("/search", { query })
       .then((response) => {
         console.log("Search result:", response.data);
-        // onSearchComplete(query);
       })
       .catch((error) => {
         console.error("Error performing search:", error);
@@ -31,7 +29,7 @@ const Hero = ({ onSearchComplete }) => {
     api
       .get("/endpoint")
       .then((response) => {
-        setData(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -56,12 +54,6 @@ const Hero = ({ onSearchComplete }) => {
           <span>Search</span>
         </button>
       </form>
-      {data && (
-        <div>
-          <h2>Fetched Data:</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      )}
     </main>
   );
 };
