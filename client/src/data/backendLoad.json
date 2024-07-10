@@ -9,11 +9,11 @@
     },
     "implied_volatility": 23.53,
     "historical_volatility": 23.4,
-    "overall_sentiment": "Bad",
+    "overall_sentiment": "Negative",
    "news_articles": [
       {
         "headline": "Example Headline 1",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        "description":"This is the description for the first news article.",
         "timestamp": 1625097600,
         "sentiment": "positive",
         "url": "https://example.com/article1"
@@ -27,14 +27,14 @@
       },
       {
         "headline": "Example Headline 1",
-        "description": "This is the description for the first news article.",
+        "description": "This story was first published on the Benzinga India portal. Apple (NASDAQ: AAPL) is reportedly reconsidering plans to manufacture iPads in India, driven by the governments initiative to attract more supply chains to the country. The tech giant is also said to be eyeing Pune for producing AirPod cases. What Happened: Apple will likely resume its search for a manufacturing partner in India after its previous attempt to collaborate with Chinas BYD for iPad production in the country was stopped s",
         "timestamp": 1625097600,
         "sentiment": "positive",
         "url": "https://example.com/article1"
       },
       {
         "headline": "Example Headline 2",
-        "description": "This is the description for the second news article.",
+        "description":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
         "timestamp": 1625184000,
         "sentiment": "neutral",
         "url": "https://example.com/article2"
