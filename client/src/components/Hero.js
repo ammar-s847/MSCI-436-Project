@@ -17,7 +17,7 @@ const Hero = ({ onSearchComplete }) => {
     setHideTitle(false);
     onSearchComplete(query);
     api
-      .post("/search", { query }) // Replace search with endpoint
+      .post("/search", { query })
       .then((response) => {
         console.log("Search result:", response.data);
         // onSearchComplete(query);
@@ -41,7 +41,9 @@ const Hero = ({ onSearchComplete }) => {
   return (
     <main className="App-main">
       {hideTitle && <h1 className="title">Welcome to Stocker!</h1>}
-      <p>Search for your favourite stocks and make smarter decisions</p>
+      <p className="hero-welcome">
+        Search for your favourite stocks and make smarter decisions
+      </p>
       <form className="search-form" onSubmit={handleSearch}>
         <input
           type="text"

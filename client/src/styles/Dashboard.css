@@ -19,4 +19,9 @@
     max-width: 100%;
     height: auto;
   }
+
+  .stocker-name{
+    margin-bottom: 2rem;
+    font-size: 24px;
+  }
   

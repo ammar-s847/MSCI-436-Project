@@ -4,11 +4,11 @@ import "../../styles/Decision.css";
 const Decision = ({ outcome }) => {
   const getClassName = (outcome) => {
     switch (outcome) {
-      case "Buy":
+      case "BUY":
         return "outcome buy";
-      case "Sell":
+      case "SELL":
         return "outcome sell";
-      case "Hold":
+      case "HOLD":
         return "outcome hold";
       default:
         return "outcome";
@@ -17,8 +17,10 @@ const Decision = ({ outcome }) => {
 
   return (
     <>
-      <h3>Overall the model recommends that you:</h3>
-      <button className={getClassName(outcome)}>{outcome}</button>
+      <p>Decision:</p>
+      <div>
+        <span className={getClassName(outcome)}>{outcome}</span>
+      </div>
     </>
   );
 };

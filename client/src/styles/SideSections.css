@@ -1,23 +1,4 @@
-
-  .scores-text {
-    display: block;
-    font-size: 3rem;
-    font-weight: bold;
-  }
-  
-  .scores-text.low {
-    color: #FF5A5A;
-  }
-  
-  .scores-text.medium {
-    color: #DBCB3C;
-  }
-  
-  .scores-text.high {
-    color: #0EF2CC;
-  }
-  
-  
+ 
   .carousel .carousel-item {
     padding: 20px;
     background-color: white;

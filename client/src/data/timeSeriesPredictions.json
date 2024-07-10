@@ -1,6 +1,23 @@
-{
+  {
+    "ticker_name": "TSLA",
+    "company_name": "Tesla",
+    "timestamp": 0,
+    "decision": "buy",
     "time_series_predictions": {
-      "arima": 193.4,
-      "garch": 133.4
-    }
+      "arima": 130.5,
+      "garch": 90.89
+    },
+    "implied_volatility": 23.53,
+    "historical_volatility": 23.4,
+    "overall_sentiment": "Bad",
+    "news_articles": [
+      {
+        "headline": "",
+        "description": "",
+        "timestamp": 0,
+        "sentiment": "positive",
+        "url": ""
+      }
+    ]
   }
+  
