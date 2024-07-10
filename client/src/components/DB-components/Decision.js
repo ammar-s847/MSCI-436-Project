@@ -17,7 +17,7 @@ const Decision = ({ outcome }) => {
 
   return (
     <>
-      <p>Decision:</p>
+      <p>Our Suggestion:</p>
       <div>
         <span className={getClassName(outcome)}>{outcome}</span>
       </div>

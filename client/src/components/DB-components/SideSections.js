@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid } from "@mui/material";
-import predictionsData from "../../data/timeSeriesPredictions.json";
+import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
-import "../../styles/SideSections.css";
 import "../../styles/Comparisons.css";
 
 const SideSections = () => {
@@ -21,7 +20,7 @@ const SideSections = () => {
   }, []);
 
   const getColorForPrediction = (value) => {
-    if (value == "Bad") {
+    if (value == "Negative") {
       return "#FF5A5A";
     } else if (value == "Neutral") {
       return "#DBCB3C";
