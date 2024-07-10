@@ -6,6 +6,7 @@ import GarchComp from "./DB-components/GarchComp";
 import ArimaComp from "./DB-components/ArimaComp";
 import SideSections from "./DB-components/SideSections";
 import Iframe from "react-iframe";
+import Data from "../data/backendLoad.json";
 import "../styles/Dashboard.css";
 
 const Dashboard = ({ symbol }) => {
@@ -14,7 +15,9 @@ const Dashboard = ({ symbol }) => {
 
   return (
     <Container maxWidth="lg">
-      <h4 className="stocker-name">[Symbol Name] - [Company Name]</h4>
+      <h4 className="stocker-name">
+        {Data.ticker_name} - {Data.company_name}{" "}
+      </h4>
       <Divider style={{ backgroundColor: "grey", marginBottom: "2rem" }} />
       <Grid container spacing={4}>
         <Grid xs={6} md={4}>
@@ -25,7 +28,7 @@ const Dashboard = ({ symbol }) => {
           <GarchComp />
         </Grid>
         <Grid xs={6} md={4}>
-          <Decision outcome="HOLD" />
+          <Decision outcome={Data.decision} />
         </Grid>
         <Grid xs={6} md={5}>
           <Iframe

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid } from "@mui/material";
-import predictionsData from "../../data/timeSeriesPredictions.json";
+import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
-import "../../styles/SideSections.css";
 import "../../styles/Comparisons.css";
 
 const SideSections = () => {
