@@ -17,7 +17,7 @@ joblib==1.4.2
 lxml==5.2.2
 MarkupSafe==2.1.5
 multitasking==0.0.11
-numpy==2.0.0
+numpy==1.26.4
 packaging==24.1
 pandas==2.2.2
 patsy==0.5.6
@@ -42,3 +42,6 @@ webencodings==0.5.1
 Werkzeug==3.0.3
 wsproto==1.2.0
 yfinance==0.2.40
+finnhub-python==2.4.20
+transformers==4.42.3
+tf-keras==2.16.0

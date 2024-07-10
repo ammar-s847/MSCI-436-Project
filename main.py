@@ -16,7 +16,11 @@ from time_series.data import (
     fetch_data, 
     fetch_most_recent_data,
 )
-
+from nlp.news_sentiment import (
+    get_company_name, 
+    load_news_data, 
+    analyze_sentiment,
+)
 
 app = Flask(__name__)
 garch_model = None
@@ -59,6 +63,18 @@ def new_ticker():
 def new_inference():
     return jsonify({"garch": pred_queue[-1]}), 200
 
+
+@app.route('/news_sentiment', methods=['GET'])
+def news_sentiment():
+    news_data = load_news_data(ticker)
+    company_name = get_company_name(ticker)
+    sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
+    return jsonify(sentiment_analysis), 200
+
+@app.route('/company_name', methods=['GET'])
+def company_name():
+    company_name = get_company_name(ticker)
+    return jsonify({"company_name": company_name}), 200
 
 def run_scheduler():
     while True:
