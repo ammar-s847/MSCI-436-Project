@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from types import Tuple
 from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
 from sklearn.metrics import mean_squared_error
 import pickle
 import yfinance as yf
+
 
 def load_arima_model(ticker: str) -> ARIMAResults:
     '''Retrieves a trained ARIMA model from disk.'''
@@ -19,9 +19,9 @@ def save_arima_model(ticker: str, model: ARIMAResults) -> None:
         pickle.dump(model, pkl_file)
 
 
-def train_arima_model(ticker: str) -> Tuple[ARIMAResults, float]:
+def train_arima_model(ticker: str) -> tuple[ARIMAResults, float]:
     '''Trains a new ARIMA model for given ticker.'''
-    stock_data = yf.download(ticker, period="30d", interval="15m")
+    stock_data = yf.download(ticker, period="5d", interval="1m")
     stock_data = stock_data['Close']
 
     train_size = int(len(stock_data) * 0.8)
@@ -55,3 +55,6 @@ def train_arima_model(ticker: str) -> Tuple[ARIMAResults, float]:
     
     return final_model_fit, mse
     
+def predict_arima(model: ARIMAResults, steps: int) -> pd.DataFrame:
+    '''Predicts stock prices using ARIMA model.'''
+    return model.forecast(steps=steps)
