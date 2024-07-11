@@ -14,12 +14,11 @@ import GarchComp from "./DB-components/GarchComp";
 import ArimaComp from "./DB-components/ArimaComp";
 import SideSections from "./DB-components/SideSections";
 import Iframe from "react-iframe";
-import Data from "../data/backendLoad.json";
 import "../styles/Dashboard.css";
 
-const Dashboard = forwardRef(({ symbol }, ref) => {
+const Dashboard = forwardRef(({ tickerName, companyName, decision, implied_volatility, historical_volatility, overall_sentiment, news_articles }, ref) => {
   const [age, setAge] = React.useState("");
-
+  
   const handleChange = (event) => {
     setAge(event.target.value);
   };
@@ -47,7 +46,7 @@ const Dashboard = forwardRef(({ symbol }, ref) => {
             className="stocker-name"
             sx={{ color: "white" }}
           >
-            {Data.ticker_name} - {Data.company_name}
+            {tickerName} - {companyName}
           </Typography>
         </Grid2>
         <Grid2 item>
@@ -88,11 +87,11 @@ const Dashboard = forwardRef(({ symbol }, ref) => {
           <GarchComp />
         </Grid2>
         <Grid2 xs={6} md={4}>
-          <Decision outcome={Data.decision} />
+          <Decision outcome={decision} />
         </Grid2>
         <Grid2 xs={6} md={5}>
           <Iframe
-            url={`${chart_Iframe_URL}?symbol=${symbol}`}
+            url={`${chart_Iframe_URL}?symbol=${tickerName}`}
             width="420px"
             height="420px"
             id="myId"
@@ -100,7 +99,7 @@ const Dashboard = forwardRef(({ symbol }, ref) => {
           />
         </Grid2>
         <Grid2 xs={6} md={7}>
-          <SideSections />
+          <SideSections implied_volatility={implied_volatility} historical_volatility={historical_volatility} overall_sentiment={overall_sentiment} news_articles={news_articles}/>
         </Grid2>
       </Grid2>
     </Container>

@@ -4,35 +4,35 @@ import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = () => {
-  const [predictions, setPredictions] = useState({
-    implied_volatility: 0.0,
-    historical_volatility: 0.0,
-    overall_sentiment: "neutral",
-    news_articles: []
-  });
+const SideSections = ({ implied_volatility, historical_volatility, overall_sentiment, news_articles}) => {
+  // const [predictions, setPredictions] = useState({
+  //   implied_volatility: 0.0,
+  //   historical_volatility: 0.0,
+  //   overall_sentiment: "neutral",
+  //   news_articles: []
+  // });
 
-  useEffect(() => {
-    const fetchPredictions = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/news_sentiment");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const news_data = await response.json();
-        setPredictions(() => ({
-          implied_volatility: predictionsData.implied_volatility,
-          historical_volatility: predictionsData.historical_volatility,
-          overall_sentiment: news_data.overall_sentiment,
-          news_articles: news_data.news_articles
-        }));
-      } catch (error) {
-        console.error("Error fetching predictions:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchPredictions = async () => {
+  //     try {
+  //       const response = await fetch("http://127.0.0.1:5000/news_sentiment");
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       const news_data = await response.json();
+  //       setPredictions(() => ({
+  //         implied_volatility: predictionsData.implied_volatility,
+  //         historical_volatility: predictionsData.historical_volatility,
+  //         overall_sentiment: news_data.overall_sentiment,
+  //         news_articles: news_data.news_articles
+  //       }));
+  //     } catch (error) {
+  //       console.error("Error fetching predictions:", error);
+  //     }
+  //   };
 
-    fetchPredictions();
-  }, []);
+  //   fetchPredictions();
+  // }, []);
 
   const [showInfo, setShowInfo] = useState(false);
 
@@ -65,12 +65,12 @@ const SideSections = () => {
       <Grid container spacing={2}>
         <Grid item xs={6} md={6} lg={6}>
           <p>Implied Volatility:</p>
-          <span className="scores-text">{predictions.implied_volatility}</span>
+          <span className="scores-text">{implied_volatility}</span>
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
           <p>Historical Volatility:</p>
           <span className="scores-text">
-            {predictions.historical_volatility}
+            {historical_volatility}
           </span>
         </Grid>
         <Grid item xs={12} style={{ position: "relative" }}>
@@ -96,10 +96,10 @@ const SideSections = () => {
           <span
             className="scores-text"
             style={{
-              color: getColorForPrediction(predictions.overall_sentiment),
+              color: getColorForPrediction(overall_sentiment),
             }}
           >
-            {predictions.overall_sentiment}
+            {overall_sentiment}
           </span>
           {showInfo && (
             <div
@@ -122,7 +122,7 @@ const SideSections = () => {
           )}
         </Grid>
         <Grid item xs={12}>
-          <NewsCarousel news_articles={predictions.news_articles} />
+          <NewsCarousel news_articles={news_articles} />
         </Grid>
       </Grid>
     </Container>
