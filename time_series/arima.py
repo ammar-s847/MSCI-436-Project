@@ -49,11 +49,11 @@ def train_arima_model(data) -> pm.arima.ARIMA:
     print("ARIMA model trained.")
     return model
 
-def forecast_next_value_arima(data: deque, model: pm.arima.ARIMA) -> np.float64:
+def forecast_arima(data: deque, model: pm.arima.ARIMA) -> np.float64:
     '''Forecasts the next value using ARIMA.'''
     model.update(data[-1])
-    forecast = model.predict(n_periods=5)
-    return forecast
+    forecast = model.predict(n_periods=1)
+    return forecast.item()
 
 def save_arima_model(ticker: str, model: pm.arima.ARIMA):
     '''Saves an ARIMA model to disk as a pickle file named based on the ticker.'''
