@@ -7,9 +7,9 @@ const Hero = ({ onSearchComplete, showDashboard, dashboardRef, tickerName }) => 
   const [query, setQuery] = useState("");
   const [hideTitle, setHideTitle] = useState(true);
   const [companyName, setCompanyName] = useState("");
-  const [implied_volatility, set_implied_volatility] = useState(0);
-  const [historical_volatility, set_historical_volatility] = useState(0);
-  const [overall_sentiment, set_overall_sentiment] = useState('neutral');
+  const [implied_volatility, set_implied_volatility] = useState(null);
+  const [historical_volatility, set_historical_volatility] = useState(null);
+  const [overall_sentiment, set_overall_sentiment] = useState(null);
   const [news_articles, set_news_articles] = useState([]);
 
   const handleInputChange = (e) => {

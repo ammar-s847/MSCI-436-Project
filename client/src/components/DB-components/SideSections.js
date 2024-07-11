@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, CircularProgress } from "@mui/material";
 import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
 const SideSections = ({ implied_volatility, historical_volatility, overall_sentiment, news_articles}) => {
+  const [showInfo, setShowInfo] = useState(false);
   // const [predictions, setPredictions] = useState({
   //   implied_volatility: 0.0,
   //   historical_volatility: 0.0,
@@ -24,8 +25,9 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
   //         implied_volatility: predictionsData.implied_volatility,
   //         historical_volatility: predictionsData.historical_volatility,
   //         overall_sentiment: news_data.overall_sentiment,
-  //         news_articles: news_data.news_articles
+  //         news_articles: news_data.news_articles,
   //       }));
+  //       setLoading(false);
   //     } catch (error) {
   //       console.error("Error fetching predictions:", error);
   //     }
@@ -33,8 +35,6 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
 
   //   fetchPredictions();
   // }, []);
-
-  const [showInfo, setShowInfo] = useState(false);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {
@@ -65,60 +65,81 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
       <Grid container spacing={2}>
         <Grid item xs={6} md={6} lg={6}>
           <p>Implied Volatility:</p>
-          <span className="scores-text">{implied_volatility}</span>
+          {implied_volatility ? (
+            <CircularProgress className="loading-container" size={50} />
+          ) : (
+            <span className="scores-text">
+              {implied_volatility}
+            </span>
+          )}
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
           <p>Historical Volatility:</p>
-          <span className="scores-text">
-            {historical_volatility}
-          </span>
+          {historical_volatility ? (
+            <CircularProgress className="loading-container" size={50} />
+          ) : (
+            <span className="scores-text">
+              {historical_volatility}
+            </span>
+          )}
         </Grid>
         <Grid item xs={12} style={{ position: "relative" }}>
-          <p>
-            Overall News Sentiment:
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            style={{ position: "relative" }}
+          >
             <button
               onClick={() => setShowInfo(!showInfo)}
               style={{
-                marginLeft: "10px",
+                marginRight: "5px",
                 backgroundColor: "white",
                 color: "black",
                 border: "none",
                 borderRadius: "50%",
-                width: "30px",
-                height: "30px",
-                fontSize: "20px",
+                width: "20px",
+                height: "20px",
+                fontSize: "10px",
                 cursor: "pointer",
+                position: "relative",
               }}
             >
               ?
             </button>
-          </p>
-          <span
-            className="scores-text"
-            style={{
-              color: getColorForPrediction(overall_sentiment),
-            }}
-          >
-            {overall_sentiment}
-          </span>
-          {showInfo && (
-            <div
+            <p>Overall News Sentiment:</p>
+            {showInfo && (
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  borderRadius: "5px",
+                  zIndex: 1000,
+                  width: "300px",
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  position: "absolute",
+                  top: "30px",
+                  left: "0",
+                }}
+              >
+                <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
+              </div>
+            )}
+          </Grid>
+          {overall_sentiment ? (
+            <CircularProgress className="loading-container" size={50} />
+          ) : (
+            <span
+              className="scores-text"
               style={{
-                position: "absolute",
-                top: "50px",
-                right: "10px",
-                backgroundColor: "white",
-                padding: "10px",
-                border: "1px solid #ddd",
-                borderRadius: "5px",
-                zIndex: 1000,
-                width: "300px",
-                maxHeight: "200px",
-                overflowY: "auto",
+                color: getColorForPrediction(overall_sentiment),
               }}
             >
-              <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
-            </div>
+              {overall_sentiment}
+            </span>
           )}
         </Grid>
         <Grid item xs={12}>

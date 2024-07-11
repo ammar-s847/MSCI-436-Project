@@ -60,3 +60,10 @@
 .carousel .carousel-dot {
   display: none !important;
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
