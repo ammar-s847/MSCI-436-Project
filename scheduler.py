@@ -36,7 +36,7 @@ def initialize_ticker(ticker: str):
     arima_model = load_arima_model(ticker)
     data_queue = deque(data[-10:], maxlen=10)
 
-def scheduled_inference(ticker: str):
+def scheduled_job(ticker: str):
     global data_queue, pred_queue
     new_data = fetch_data(ticker)
     data_queue = deque(new_data[-10:], maxlen=10)
@@ -48,17 +48,16 @@ def scheduled_inference(ticker: str):
     arima_model = train_arima_model(new_data)
     arima_pred = forecast_arima(data_queue, arima_model)
     arima_pred_queue.append(arima_pred)
-    # arima_pred_queue.append(data_queue[-1] + math.sin(time.time() / 10.0))
 
-def threaded_job():
+def threaded_worker():
     while True:
-        scheduled_inference(ticker)
+        scheduled_job(ticker)
         sio.emit('inference', {'garch': garch_pred_queue[-1], 'arima': arima_pred_queue[-1]}, namespace='/schedule')
         time.sleep(60)
 
 if __name__ == "__main__":
     initialize_ticker(ticker)
     sio.connect(host, namespaces=['/schedule'])
-    job_thread = threading.Thread(target=threaded_job, daemon=True)
+    job_thread = threading.Thread(target=threaded_worker, daemon=True)
     job_thread.start()
     sio.wait()

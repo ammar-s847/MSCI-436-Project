@@ -8,17 +8,13 @@ from time_series.garch import (
     train_garch_model, 
     load_garch_model,
     save_garch_model,
-    forecast_next_value_garch_steps,
 )
 from time_series.arima import (
-    load_arima_model,
     train_arima_model,
     save_arima_model,
-    forecast_arima,
 )
 from time_series.data import (
-    fetch_data, 
-    fetch_most_recent_data,
+    fetch_data,
     get_historical_volatility,
     get_implied_volatility,
 )
@@ -49,8 +45,11 @@ def train_ticker(ticker: str, no_save: bool = False):
     global garch_model
     data = fetch_data(ticker)
     garch_model = train_garch_model(data)
+    arima_model = train_arima_model(data)
     if not no_save:
         save_garch_model(ticker, garch_model)
+        save_arima_model(ticker, arima_model)
+
 
 @app.route('/new_ticker', methods=['POST'])
 def new_ticker():
@@ -61,16 +60,6 @@ def new_ticker():
         file.write(ticker)
     initialize_ticker(ticker)
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
-
-# steps = 1
-# @app.route('/time_series_inference', methods=['GET'])
-# def new_inference():
-#     global steps
-#     steps += 1
-#     garch_pred = forecast_next_value_garch_steps(steps, garch_model)
-#     print(steps)
-#     # arima_pred = forecast_next_value_arima(steps, arima_model)
-#     return jsonify({"garch": garch_pred}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
 def news_sentiment():
@@ -97,11 +86,5 @@ def socket_inference(data):
     socket_app.emit('inference', data, namespace='/schedule')
 
 if __name__ == "__main__":
-    # data = fetch_data(ticker)
-    # model = train_arima_model(data)
-    # data_queue = deque(data[-10:], maxlen=10)
-    # new_value = fetch_most_recent_data(ticker)
-    # print(forecast_next_value_arima(data_queue, model))
-    # initialize_ticker(ticker)
     socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
 

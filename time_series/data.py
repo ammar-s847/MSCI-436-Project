@@ -6,11 +6,6 @@ def fetch_data(ticker: str):
     stock_data = yf.download(ticker, period="1d", interval="1m")
     return stock_data['Close']
 
-def fetch_most_recent_data(ticker: str):
-    """Fetches the most recent data from Yahoo Finance."""
-    stock_data = yf.download(ticker, period="1d", interval="1m")
-    return stock_data['Close'].iloc[-1]
-
 def get_historical_volatility(ticker: str):
     """Fetches the volatility of a stock."""
     stock_data = yf.download(ticker, period="1d", interval="1m")
