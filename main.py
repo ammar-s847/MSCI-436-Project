@@ -2,6 +2,7 @@ from collections import deque
 
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
+from flask_cors import CORS
 
 from time_series.garch import (
     train_garch_model, 
@@ -23,7 +24,8 @@ from nlp.news_sentiment import (
 )
 
 app = Flask(__name__)
-socket_app = SocketIO(app)
+CORS(app)
+socket_app = SocketIO(app, cors_allowed_origins="*")
 garch_model = None
 arima_model = None
 
@@ -76,8 +78,9 @@ def company_name():
     return jsonify({"company_name": company_name}), 200
 
 @socket_app.on('inference', namespace='/schedule')
-def username(data):
+def socket_inference(data):
     print(data)
+    socket_app.emit('inference', data, broadcast=True)
 
 if __name__ == "__main__":
     # train_arima_model(ticker)
