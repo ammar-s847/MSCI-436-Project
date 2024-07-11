@@ -39,7 +39,13 @@ const NewsCarousel = ({ news_articles = [] }) => {
 
   return (
     <div>
-      <p>News Overview:</p>
+      <p
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        News Overview:
+      </p>
       {loading ? (
         <div className="loading-container">
           <CircularProgress />
