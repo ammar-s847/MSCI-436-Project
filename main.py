@@ -80,7 +80,7 @@ def company_name():
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
     print(data)
-    socket_app.emit('inference', data, broadcast=True)
+    socket_app.emit('inference', data, namespace='/schedule')
 
 if __name__ == "__main__":
     # train_arima_model(ticker)

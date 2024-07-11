@@ -12,8 +12,8 @@ const GarchComp = () => {
     // setPredictions(predictionsData.time_series_predictions);
 
     socket.on('inference', (data) => {
-      setMessage(data.data);
-      console.log(data.data);
+      setMessage(data.garch);
+      console.log(data.garch);
     });
 
     return () => {
@@ -37,7 +37,7 @@ const GarchComp = () => {
       <div>
         <span
           className="scores-text"
-          style={{ color: getColorForPrediction(message) }}
+          style={{ color: getColorForPrediction(Number(message)) }}
         >
           {message}
         </span>
