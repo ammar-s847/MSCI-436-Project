@@ -12,10 +12,9 @@ def train_garch_model(data) -> arch_model:
     print("GARCH model trained.")
     return garch_model
 
-def forecast_next_value_garch(queue: deque, model: arch_model) -> np.float64:
+def forecast_garch(queue: deque, model: arch_model) -> np.float64:
     """Forecasts the next value using GARCH."""
-    new_data = pd.Series(queue)
-    forecast = model.forecast(horizon=1, start=len(new_data)-10)
+    forecast = model.forecast(horizon=1, start=len(queue)-10)
     return forecast.mean['h.1'].iloc[-1]
 
 def forecast_next_value_garch_steps(steps: int, model: arch_model) -> np.float64:

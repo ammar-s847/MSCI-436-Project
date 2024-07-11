@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import predictionsData from "../../data/backendLoad.json";
 import "../../styles/Comparisons.css";
+import io from 'socket.io-client';
+
+const socket = io('http://127.0.0.1:5000/schedule');
 
 const ArimaComp = () => {
-  const [predictions, setPredictions] = useState({ arima: 0.0 });
-
+  const [message, setMessage] = useState('');
   useEffect(() => {
-    setPredictions(predictionsData.time_series_predictions);
+    socket.on('inference', (data) => {
+      const roundedMessage = Number(data.arima).toFixed(2);
+      setMessage(roundedMessage);
+      console.log(roundedMessage);
+    });
+
+    return () => {
+      socket.off('inference');
+    };
   }, []);
 
   const getColorForPrediction = (value) => {
@@ -25,9 +35,9 @@ const ArimaComp = () => {
       <div>
         <span
           className="scores-text"
-          style={{ color: getColorForPrediction(predictions.arima) }}
+          style={{ color: getColorForPrediction(Number(message)) }}
         >
-          {predictions.arima}
+          {message}
         </span>
       </div>
     </>

@@ -10,13 +10,18 @@ from time_series.garch import (
     save_garch_model,
     forecast_next_value_garch_steps,
 )
-# from time_series.arima import (
-#     load_arima_model,
-#     train_arima_model,
-#     save_arima_model,
-#     forecast_next_value_arima,
-# )
-from time_series.data import fetch_data
+from time_series.arima import (
+    load_arima_model,
+    train_arima_model,
+    save_arima_model,
+    forecast_arima,
+)
+from time_series.data import (
+    fetch_data, 
+    fetch_most_recent_data,
+    get_historical_volatility,
+    get_implied_volatility,
+)
 from nlp.news_sentiment import (
     get_company_name, 
     load_news_data, 
@@ -28,6 +33,7 @@ CORS(app)
 socket_app = SocketIO(app, cors_allowed_origins="*")
 garch_model = None
 arima_model = None
+data_queue = None
 
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
@@ -78,12 +84,24 @@ def company_name():
     company_name = get_company_name(ticker)
     return jsonify({"company_name": company_name}), 200
 
+@app.route('/volatility', methods=['GET'])
+def volatility():
+    return jsonify({
+        "historical_volatility": get_historical_volatility(ticker),
+        "implied_volatility": get_implied_volatility(ticker),
+    }), 200
+
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
     print(data)
     socket_app.emit('inference', data, namespace='/schedule')
 
 if __name__ == "__main__":
-    # train_arima_model(ticker)
-    initialize_ticker(ticker)
+    # data = fetch_data(ticker)
+    # model = train_arima_model(data)
+    # data_queue = deque(data[-10:], maxlen=10)
+    # new_value = fetch_most_recent_data(ticker)
+    # print(forecast_next_value_arima(data_queue, model))
+    # initialize_ticker(ticker)
     socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
+
