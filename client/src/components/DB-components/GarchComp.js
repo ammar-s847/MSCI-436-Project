@@ -10,10 +10,10 @@ const GarchComp = () => {
   const [message, setMessage] = useState('');
   useEffect(() => {
     // setPredictions(predictionsData.time_series_predictions);
-
     socket.on('inference', (data) => {
-      setMessage(data.garch);
-      console.log(data.garch);
+      const roundedMessage = Number(data.garch).toFixed(2);
+      setMessage(roundedMessage);
+      console.log(roundedMessage);
     });
 
     return () => {

@@ -5,12 +5,7 @@ import newsData from "../../data/backendLoad.json";
 import "../../styles/NewsCarousel.css";
 import { Grid } from "@mui/material";
 
-const NewsCarousel = () => {
-  const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
-    setArticles(newsData.news_articles);
-  }, []);
+const NewsCarousel = ({news_articles = []}) => {
 
   const getSentimentColor = (sentiment) => {
     switch (sentiment) {
@@ -27,7 +22,7 @@ const NewsCarousel = () => {
 
   return (
     <Carousel showThumbs={false} showStatus={false}>
-      {articles.map((article, index) => (
+      {news_articles.map((article, index) => (
         <div key={index} className="carousel-item">
           <h2>{article.headline}</h2>
           <p>{article.description}</p>

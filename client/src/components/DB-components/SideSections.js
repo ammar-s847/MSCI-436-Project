@@ -10,19 +10,32 @@ const SideSections = () => {
     historical_volatility: 0.0,
     overall_sentiment: "neutral",
   });
-
   useEffect(() => {
-    setPredictions({
-      implied_volatility: predictionsData.implied_volatility,
-      historical_volatility: predictionsData.historical_volatility,
-      overall_sentiment: predictionsData.overall_sentiment,
-    });
+    const fetchPredictions = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/news_sentiment");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const news_data = await response.json();
+        setPredictions(() => ({
+          implied_volatility: predictionsData.implied_volatility,
+          historical_volatility: predictionsData.historical_volatility,
+          overall_sentiment: news_data.overall_sentiment,
+          news_articles: news_data.news_articles
+        }));
+      } catch (error) {
+        console.error("Error fetching predictions:", error);
+      }
+    };
+
+    fetchPredictions();
   }, []);
 
   const getColorForPrediction = (value) => {
-    if (value == "Negative") {
+    if (value == "negative") {
       return "#FF5A5A";
-    } else if (value == "Neutral") {
+    } else if (value == "neutral") {
       return "#DBCB3C";
     } else {
       return "#0EF2CC";
@@ -54,7 +67,7 @@ const SideSections = () => {
           </span>
         </Grid>
         <Grid item xs={12}>
-          <NewsCarousel />
+          <NewsCarousel news_articles={predictions.news_articles}/>
         </Grid>
       </Grid>
     </Container>
