@@ -21,7 +21,7 @@ function App() {
     <div className="App">
       <Header />
       <Hero onSearchComplete={handleSearchComplete} />
-      {showDashboard && <Dashboard ref={dashboardRef} symbol={symbol} />}
+      {showDashboard && <Dashboard ref={dashboardRef} tickerName={symbol} />}
     </div>
   );
 }

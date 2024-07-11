@@ -4,38 +4,37 @@ import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = () => {
-  const [predictions, setPredictions] = useState({
-    implied_volatility: null,
-    historical_volatility: null,
-    overall_sentiment: null,
-    news_articles: [],
-  });
-  const [loading, setLoading] = useState(true);
+const SideSections = ({ implied_volatility, historical_volatility, overall_sentiment, news_articles}) => {
   const [showInfo, setShowInfo] = useState(false);
+  // const [predictions, setPredictions] = useState({
+  //   implied_volatility: 0.0,
+  //   historical_volatility: 0.0,
+  //   overall_sentiment: "neutral",
+  //   news_articles: []
+  // });
 
-  useEffect(() => {
-    const fetchPredictions = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/news_sentiment");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const news_data = await response.json();
-        setPredictions(() => ({
-          implied_volatility: predictionsData.implied_volatility,
-          historical_volatility: predictionsData.historical_volatility,
-          overall_sentiment: news_data.overall_sentiment,
-          news_articles: news_data.news_articles,
-        }));
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching predictions:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchPredictions = async () => {
+  //     try {
+  //       const response = await fetch("http://127.0.0.1:5000/news_sentiment");
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       const news_data = await response.json();
+  //       setPredictions(() => ({
+  //         implied_volatility: predictionsData.implied_volatility,
+  //         historical_volatility: predictionsData.historical_volatility,
+  //         overall_sentiment: news_data.overall_sentiment,
+  //         news_articles: news_data.news_articles,
+  //       }));
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching predictions:", error);
+  //     }
+  //   };
 
-    fetchPredictions();
-  }, []);
+  //   fetchPredictions();
+  // }, []);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {
@@ -66,21 +65,21 @@ const SideSections = () => {
       <Grid container spacing={2}>
         <Grid item xs={6} md={6} lg={6}>
           <p>Implied Volatility:</p>
-          {loading ? (
+          {implied_volatility ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {predictions.implied_volatility}
+              {implied_volatility}
             </span>
           )}
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
           <p>Historical Volatility:</p>
-          {loading ? (
+          {historical_volatility ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {predictions.historical_volatility}
+              {historical_volatility}
             </span>
           )}
         </Grid>
@@ -130,21 +129,21 @@ const SideSections = () => {
               </div>
             )}
           </Grid>
-          {loading ? (
+          {overall_sentiment ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span
               className="scores-text"
               style={{
-                color: getColorForPrediction(predictions.overall_sentiment),
+                color: getColorForPrediction(overall_sentiment),
               }}
             >
-              {predictions.overall_sentiment}
+              {overall_sentiment}
             </span>
           )}
         </Grid>
         <Grid item xs={12}>
-          <NewsCarousel news_articles={predictions.news_articles} />
+          <NewsCarousel news_articles={news_articles} />
         </Grid>
       </Grid>
     </Container>
