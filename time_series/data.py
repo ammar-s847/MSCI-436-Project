@@ -1,7 +1,6 @@
 import yfinance as yf
 import pandas as pd
 
-
 def fetch_data(ticker: str):
     """Fetches 1-minute increment data from Yahoo Finance."""
     stock_data = yf.download(ticker, period="1d", interval="1m")

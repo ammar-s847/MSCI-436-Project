@@ -4,7 +4,6 @@ import pickle
 from collections import deque
 from arch import arch_model 
 
-
 def train_garch_model(data) -> arch_model:
     """Trains a new GARCH model."""
     global garch_model
@@ -17,6 +16,11 @@ def forecast_next_value_garch(queue: deque, model: arch_model) -> np.float64:
     """Forecasts the next value using GARCH."""
     new_data = pd.Series(queue)
     forecast = model.forecast(horizon=1, start=len(new_data)-10)
+    return forecast.mean['h.1'].iloc[-1]
+
+def forecast_next_value_garch_steps(steps: int, model: arch_model) -> np.float64:
+    """Forecasts the next value using GARCH."""
+    forecast = model.forecast(horizon=steps)
     return forecast.mean['h.1'].iloc[-1]
 
 def save_garch_model(ticker: str, garch_model: arch_model):

@@ -1,60 +1,37 @@
 import pandas as pd
 import numpy as np
-from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
-from sklearn.metrics import mean_squared_error
 import pickle
-import yfinance as yf
+from collections import deque
+from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
 
+def train_arima_model(data) -> ARIMAResults:
+    '''Trains a new ARIMA model.'''
+    model = ARIMA(data, order=(5, 2, 5))
+    model_fit = model.fit()
+    print("ARIMA model trained.")
+    return model_fit
+
+def forecast_next_value_arima(step: int, model: ARIMAResults) -> np.float64:
+    '''Forecasts the next value using ARIMA.'''
+    # new_data = pd.Series(queue)
+    forecast = model.forecast(steps=step)
+    return forecast[0]
+
+def save_arima_model(ticker: str, model: ARIMAResults):
+    '''Saves an ARIMA model to disk as a pickle file named based on the ticker.'''
+    filename = f'./models/{ticker}_arima_model.pkl'
+    with open(filename, 'wb') as f:
+        pickle.dump(model, f)
+    print(f"ARIMA model saved to {filename}")
 
 def load_arima_model(ticker: str) -> ARIMAResults:
-    '''Retrieves a trained ARIMA model from disk.'''
-    with open(f'{ticker}_arima_model.pkl', 'rb') as pkl_file:
-        model = ARIMAResults.load(pkl_file)
-    return model
-    
-
-def save_arima_model(ticker: str, model: ARIMAResults) -> None:
-    '''Saves a trained ARIMA model to disk.'''
-    with open(f'{ticker}_arima_model.pkl', 'wb') as pkl_file:
-        pickle.dump(model, pkl_file)
-
-
-def train_arima_model(ticker: str) -> tuple[ARIMAResults, float]:
-    '''Trains a new ARIMA model for given ticker.'''
-    stock_data = yf.download(ticker, period="5d", interval="1m")
-    stock_data = stock_data['Close']
-
-    train_size = int(len(stock_data) * 0.8)
-    train, test = stock_data[:train_size], stock_data[train_size:]
-
-    best_order = None
-    best_mse = float('inf')
-    
-    for p in range(5):
-        for d in range(2):
-            for q in range(5):
-                try:
-                    model = ARIMA(train, order=(p, d, q))
-                    model_fit = model.fit()
-                    predictions = model_fit.forecast(steps=len(test))
-                    mse = mean_squared_error(test, predictions)
-                    
-                    if mse < best_mse:
-                        best_mse = mse
-                        best_order = (p, d, q)
-                except:
-                    continue
-    
-    final_model = ARIMA(stock_data, order=best_order)
-    final_model_fit = final_model.fit()
-    
-    save_arima_model(ticker, final_model_fit)
-    
-    predictions = final_model_fit.forecast(steps=len(test))
-    mse = mean_squared_error(test, predictions)
-    
-    return final_model_fit, mse
-    
-def predict_arima(model: ARIMAResults, steps: int) -> pd.DataFrame:
-    '''Predicts stock prices using ARIMA model.'''
-    return model.forecast(steps=steps)
+    '''Loads an ARIMA model from a pickle file named based on the ticker.'''
+    filename = f'./models/{ticker}_arima_model.pkl'
+    try:
+        with open(filename, 'rb') as f:
+            model = pickle.load(f)
+        print(f"ARIMA model loaded from {filename}")
+        return model
+    except FileNotFoundError:
+        print(f"No model found for ticker {ticker}")
+        return None
