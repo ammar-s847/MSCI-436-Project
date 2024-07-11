@@ -8,7 +8,6 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: left;
   height: 250px;
-  /* overflow: scroll; */
   overflow-y: auto; 
   overflow-x: hidden;
 }
@@ -60,4 +59,11 @@
 .carousel .carousel-indicators,
 .carousel .carousel-dot {
   display: none !important;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

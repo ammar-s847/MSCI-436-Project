@@ -59,6 +59,7 @@ def new_ticker():
     train_ticker(ticker)
     with open('TICKER.txt', 'w') as file:
         file.write(ticker)
+    initialize_ticker(ticker)
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 # steps = 1
