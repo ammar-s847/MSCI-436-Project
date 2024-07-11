@@ -16,4 +16,14 @@
   .scores-text.high {
     color: #0EF2CC;
   }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    size: 50px;
+    margin-top: 10px;
+  }
+  
   
