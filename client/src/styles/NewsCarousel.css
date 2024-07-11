@@ -9,7 +9,7 @@
   text-align: left;
   height: 250px;
   /* overflow: scroll; */
-  overflow-y: scroll; 
+  overflow-y: auto; 
   overflow-x: hidden;
 }
 
