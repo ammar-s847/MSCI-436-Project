@@ -49,12 +49,11 @@ def train_ticker(ticker: str, no_save: bool = False):
 @app.route('/new_ticker', methods=['POST'])
 def new_ticker():
     data = request.json
-    ticker = data
-    with open('TICKER.txt', 'r') as file:
-        ticker = file.read().strip()
+    ticker = data['ticker']
     train_ticker(ticker)
     with open('TICKER.txt', 'w') as file:
         file.write(ticker)
+    initialize_ticker(ticker)
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 # steps = 1

@@ -39,6 +39,8 @@ const Hero = ({ onSearchComplete, showDashboard, dashboardRef, tickerName }) => 
       .catch((error) => {
         console.error("Error performing search:", error);
       });
+
+      console.log(companyName)
   };
 
   return (
