@@ -55,3 +55,9 @@
   padding: 5px;
   flex-shrink: 0; 
 }
+
+.carousel .control-dots,
+.carousel .carousel-indicators,
+.carousel .carousel-dot {
+  display: none !important;
+}
