@@ -6,10 +6,10 @@ import socketio
 from time_series.garch import (
     forecast_next_value_garch,
     load_garch_model,
+    train_garch_model,
 )
 from time_series.data import (
-    fetch_data, 
-    fetch_most_recent_data,
+    fetch_data,
 )
 
 sio = socketio.Client(engineio_logger=True)
@@ -33,8 +33,10 @@ def scheduled_inference(ticker: str):
     global garch_model, data_queue, pred_queue
     new_value = fetch_most_recent_data(ticker)
     data_queue.append(new_value)
+    garch_model = train_garch_model(ticker)
     garch_pred = forecast_next_value_garch(data_queue, garch_model)
     pred_queue.append(garch_pred)
+
 
 def threaded_job():
     while True:
