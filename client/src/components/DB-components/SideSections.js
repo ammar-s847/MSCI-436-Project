@@ -3,36 +3,55 @@ import { Container, Grid, CircularProgress } from "@mui/material";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = ({ overall_sentiment, news_articles }) => {
+const SideSections = () => {
   const [showInfo, setShowInfo] = useState(false);
-  const [predictions, setPredictions] = useState({
+  const [loading, setLoading] = useState(true);
+  const [volatility, setVolatility] = useState({
     implied_volatility: 0.0,
     historical_volatility: 0.0,
+  });
+  const [newsData, setNewsData] = useState({
     overall_sentiment: "neutral",
-    news_articles: []
+    news_articles: [],
   });
 
   useEffect(() => {
-    const fetchPredictions = async () => {
+    const fetchVolatility = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/volatility");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setVolatility({
+          implied_volatility: Number(data.implied_volatility).toFixed(5),
+          historical_volatility: Number(data.historical_volatility).toFixed(5),
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching volatility data:", error);
+      }
+    };
+
+    const fetchNewsSentiment = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/news_sentiment");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const news_data = await response.json();
-        console.log(news_data)
-        setPredictions(() => ({
-          implied_volatility: predictionsData.implied_volatility,
-          historical_volatility: predictionsData.historical_volatility,
-          overall_sentiment: news_data.overall_sentiment,
-          news_articles: news_data.news_articles,
-        }));
+        const data = await response.json();
+        setNewsData({
+          overall_sentiment: data.overall_sentiment,
+          news_articles: data.news_articles,
+        });
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching predictions:", error);
+        console.error("Error fetching news sentiment:", error);
       }
     };
 
-    fetchPredictions();
+    fetchVolatility();
+    fetchNewsSentiment();
   }, []);
 
   const getColorForPrediction = (value) => {
@@ -60,88 +79,84 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
   `;
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={6} lg={6}>
-          <p>Implied Volatility:</p>
-          {loading ? (
-            <CircularProgress className="loading-container" size={50} />
-          ) : (
-            <span className="scores-text">
-              {Number(volatility.implied_volatility)}
-            </span>
-          )}
-        </Grid>
-        <Grid item xs={6} md={6} lg={6}>
-          <p>Historical Volatility:</p>
-          {loading ? (
-            <CircularProgress className="loading-container" size={50} />
-          ) : (
-            <span className="scores-text">
-              {Number(volatility.historical_volatility)}
-            </span>
-          )}
-        </Grid>
-        <Grid item xs={12} style={{ position: "relative" }}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            style={{ position: "relative" }}
-          >
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              style={{
-                marginRight: "5px",
-                backgroundColor: "white",
-                color: "black",
-                border: "none",
-                borderRadius: "50%",
-                width: "20px",
-                height: "20px",
-                fontSize: "10px",
-                cursor: "pointer",
-                position: "relative",
-              }}
-            >
-              ?
-            </button>
-            <p>Overall News Sentiment:</p>
-            {showInfo && (
-              <div
-                style={{
-                  backgroundColor: "white",
-                  padding: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                  zIndex: 1000,
-                  width: "300px",
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                  position: "absolute",
-                  top: "30px",
-                  left: "0",
-                }}
-              >
-                <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
-              </div>
-            )}
-          </Grid>
-            <span
-              className="scores-text"
-              style={{
-                color: getColorForPrediction(predictions.overall_sentiment),
-              }}
-            >
-              {predictions.overall_sentiment}
-            </span>
-        </Grid>
-        <Grid item xs={12}>
-          <NewsCarousel news_articles={predictions.news_articles} />
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={4}>
+        <p>Implied Volatility:</p>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span className="scores-text">{volatility.implied_volatility}</span>
+        )}
       </Grid>
-    </Container>
+      <Grid item xs={4}>
+        <p>Historical Volatility:</p>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span className="scores-text">
+            {volatility.historical_volatility}
+          </span>
+        )}
+      </Grid>
+      <Grid item xs={4} style={{ position: "relative" }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          style={{ position: "relative" }}
+        >
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            style={{
+              marginRight: "5px",
+              backgroundColor: "white",
+              color: "black",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              fontSize: "10px",
+              cursor: "pointer",
+              position: "relative",
+            }}
+          >
+            ?
+          </button>
+          <p>Overall News Sentiment:</p>
+          {showInfo && (
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "10px",
+                border: "1px solid #ddd",
+                borderRadius: "5px",
+                zIndex: 1000,
+                width: "300px",
+                maxHeight: "200px",
+                overflowY: "auto",
+                position: "absolute",
+                top: "30px",
+                left: "0",
+              }}
+            >
+              <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
+            </div>
+          )}
+        </Grid>
+        <span
+          className="scores-text"
+          style={{
+            color: getColorForPrediction(newsData.overall_sentiment),
+          }}
+        >
+          {newsData.overall_sentiment}
+        </span>
+      </Grid>
+      <Grid item xs={12}>
+        <NewsCarousel news_articles={newsData.news_articles} />
+      </Grid>
+    </Grid>
   );
 };
 
