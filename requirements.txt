@@ -7,6 +7,7 @@ blinker==1.8.2
 certifi==2024.6.2
 charset-normalizer==3.3.2
 click==8.1.7
+Cython==3.0.10
 filelock==3.15.4
 finnhub-python==2.4.20
 Flask==3.0.3
@@ -44,6 +45,7 @@ pandas==2.2.2
 patsy==0.5.6
 peewee==3.17.5
 platformdirs==4.2.2
+pmdarima==2.0.4
 protobuf==4.25.3
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
