@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, CircularProgress } from "@mui/material";
-import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = ({ implied_volatility, historical_volatility, overall_sentiment, news_articles}) => {
+const SideSections = ({ overall_sentiment, news_articles }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [predictions, setPredictions] = useState({
     implied_volatility: 0.0,
@@ -65,21 +64,21 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
       <Grid container spacing={2}>
         <Grid item xs={6} md={6} lg={6}>
           <p>Implied Volatility:</p>
-          {implied_volatility ? (
+          {loading ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {implied_volatility}
+              {Number(volatility.implied_volatility)}
             </span>
           )}
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
           <p>Historical Volatility:</p>
-          {historical_volatility ? (
+          {loading ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {historical_volatility}
+              {Number(volatility.historical_volatility)}
             </span>
           )}
         </Grid>
