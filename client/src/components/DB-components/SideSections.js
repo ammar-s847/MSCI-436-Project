@@ -5,33 +5,34 @@ import "../../styles/Comparisons.css";
 
 const SideSections = ({ overall_sentiment, news_articles }) => {
   const [showInfo, setShowInfo] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [volatility, setVolatility] = useState({
-    implied_volatility: null,
-    historical_volatility: null,
+  const [predictions, setPredictions] = useState({
+    implied_volatility: 0.0,
+    historical_volatility: 0.0,
+    overall_sentiment: "neutral",
+    news_articles: []
   });
 
   useEffect(() => {
-    const fetchVolatility = async () => {
+    const fetchPredictions = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/volatility");
+        const response = await fetch("http://127.0.0.1:5000/news_sentiment");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        const roundedImplied = Number(data.implied_volatility).toFixed(5);
-        const roundedHistorical = Number(data.historical_volatility).toFixed(5);
-        setVolatility({
-          implied_volatility: roundedImplied,
-          historical_volatility: roundedHistorical,
-        });
-        setLoading(false);
+        const news_data = await response.json();
+        console.log(news_data)
+        setPredictions(() => ({
+          implied_volatility: predictionsData.implied_volatility,
+          historical_volatility: predictionsData.historical_volatility,
+          overall_sentiment: news_data.overall_sentiment,
+          news_articles: news_data.news_articles,
+        }));
       } catch (error) {
-        console.error("Error fetching volatility data:", error);
+        console.error("Error fetching predictions:", error);
       }
     };
 
-    fetchVolatility();
+    fetchPredictions();
   }, []);
 
   const getColorForPrediction = (value) => {
@@ -127,17 +128,17 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
               </div>
             )}
           </Grid>
-          <span
-            className="scores-text"
-            style={{
-              color: getColorForPrediction(overall_sentiment),
-            }}
-          >
-            {overall_sentiment}
-          </span>
+            <span
+              className="scores-text"
+              style={{
+                color: getColorForPrediction(predictions.overall_sentiment),
+              }}
+            >
+              {predictions.overall_sentiment}
+            </span>
         </Grid>
         <Grid item xs={12}>
-          <NewsCarousel news_articles={news_articles} />
+          <NewsCarousel news_articles={predictions.news_articles} />
         </Grid>
       </Grid>
     </Container>
