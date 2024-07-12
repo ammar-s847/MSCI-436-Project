@@ -2,7 +2,7 @@ from collections import deque
 
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from time_series.garch import (
     train_garch_model, 
@@ -26,6 +26,11 @@ from nlp.news_sentiment import (
 
 app = Flask(__name__)
 CORS(app)
+cors = CORS(app, resource={
+    r"/*":{
+        "origins":"*"
+    }
+})
 socket_app = SocketIO(app, cors_allowed_origins="*")
 garch_model = None
 arima_model = None
@@ -52,6 +57,7 @@ def train_ticker(ticker: str, no_save: bool = False):
 
 
 @app.route('/new_ticker', methods=['POST'])
+@cross_origin()
 def new_ticker():
     data = request.json
     ticker = data['ticker']
