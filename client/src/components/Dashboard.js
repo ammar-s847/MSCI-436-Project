@@ -1,4 +1,9 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import {
   Container,
@@ -20,7 +25,6 @@ const Dashboard = forwardRef(
   (
     {
       tickerName,
-      companyName,
       decision,
       implied_volatility,
       historical_volatility,
@@ -29,8 +33,10 @@ const Dashboard = forwardRef(
     },
     ref
   ) => {
-    const [age, setAge] = React.useState("");
+    const [age, setAge] = useState("");
+    const [companyName, setCompanyName] = useState("");
     const ticker_Name = tickerName.toUpperCase();
+
     const handleChange = (event) => {
       setAge(event.target.value);
     };
@@ -40,6 +46,23 @@ const Dashboard = forwardRef(
         setAge("");
       },
     }));
+
+    useEffect(() => {
+      const fetchCompanyName = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/company_name");
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setCompanyName(data.company_name.toUpperCase());
+        } catch (error) {
+          console.error("Error fetching company name:", error);
+        }
+      };
+
+      fetchCompanyName();
+    }, []);
 
     const chart_Iframe_URL =
       "https://ammar-s847.github.io/TradingView-chart-Iframe/";
@@ -117,7 +140,7 @@ const Dashboard = forwardRef(
             <GarchComp />
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <Decision outcome={decision} />
+            <Decision outcome={"Buy"} />
           </Grid2>
           <Grid2 xs={12} md={12}>
             <SideSections
