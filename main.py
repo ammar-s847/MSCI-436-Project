@@ -39,6 +39,9 @@ data_queue = None
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
 
+with open('OVERALL_SENTIMENT.txt', 'r') as file:
+    overall_sentiment = file.read().strip()
+
 def initialize_ticker(ticker: str):
     global garch_model, data_queue, arima_model
     data = fetch_data(ticker)
@@ -55,6 +58,40 @@ def train_ticker(ticker: str, no_save: bool = False):
         save_garch_model(ticker, garch_model)
         save_arima_model(ticker, arima_model)
 
+def make_stock_decision(
+        current_price, 
+        arima_prediction, 
+        garch_prediction, 
+        sentiment_score, 
+        holding = False, 
+        threshold = 0.02
+    ):
+    buy_threshold = threshold
+    sell_threshold = -threshold
+    
+    average_prediction = (arima_prediction + garch_prediction) / 2
+    
+    if sentiment_score == 'positive':
+        if average_prediction > current_price * (1 + buy_threshold) and not holding:
+            return 'buy'
+        elif holding and average_prediction < current_price * (1 + sell_threshold):
+            return 'sell'
+        else:
+            return 'hold'
+    elif sentiment_score == 'neutral':
+        if average_prediction > current_price and not holding:
+            return 'buy'
+        elif holding and average_prediction < current_price:
+            return 'sell'
+        else:
+            return 'hold'
+    elif sentiment_score == 'negative':
+        if holding:
+            return 'sell'
+        else:
+            return 'hold'
+    else:
+        raise ValueError("Invalid sentiment score. It must be 'positive', 'neutral', or 'negative'.")
 
 @app.route('/new_ticker', methods=['POST'])
 @cross_origin()
@@ -72,6 +109,9 @@ def news_sentiment():
     news_data = load_news_data(ticker)
     company_name = get_company_name(ticker)
     sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
+    overall_sentiment = sentiment_analysis['overall_sentiment']
+    with open('OVERALL_SENTIMENT.txt', 'w') as file:
+        file.write(overall_sentiment)
     return jsonify(sentiment_analysis), 200
 
 @app.route('/company_name', methods=['GET'])
@@ -85,6 +125,24 @@ def volatility():
         "historical_volatility": get_historical_volatility(ticker),
         "implied_volatility": get_implied_volatility(ticker),
     }), 200
+
+@app.route('/make_decision', methods=['GET'])
+def make_decision():
+    current_price = fetch_data(ticker).iloc(-1)
+    arima_prediction = 100
+    garch_prediction = 100
+    sentiment_score = overall_sentiment
+    holding = False
+    
+    decision = make_stock_decision(
+        current_price, 
+        arima_prediction, 
+        garch_prediction, 
+        sentiment_score, 
+        holding
+    )
+    
+    return jsonify({"decision": decision}), 200
 
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
