@@ -59,88 +59,86 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
   `;
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={6} lg={6}>
-          <p>Implied Volatility:</p>
-          {loading ? (
-            <CircularProgress className="loading-container" size={50} />
-          ) : (
-            <span className="scores-text">
-              {Number(volatility.implied_volatility)}
-            </span>
-          )}
-        </Grid>
-        <Grid item xs={6} md={6} lg={6}>
-          <p>Historical Volatility:</p>
-          {loading ? (
-            <CircularProgress className="loading-container" size={50} />
-          ) : (
-            <span className="scores-text">
-              {Number(volatility.historical_volatility)}
-            </span>
-          )}
-        </Grid>
-        <Grid item xs={12} style={{ position: "relative" }}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            style={{ position: "relative" }}
-          >
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              style={{
-                marginRight: "5px",
-                backgroundColor: "white",
-                color: "black",
-                border: "none",
-                borderRadius: "50%",
-                width: "20px",
-                height: "20px",
-                fontSize: "10px",
-                cursor: "pointer",
-                position: "relative",
-              }}
-            >
-              ?
-            </button>
-            <p>Overall News Sentiment:</p>
-            {showInfo && (
-              <div
-                style={{
-                  backgroundColor: "white",
-                  padding: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                  zIndex: 1000,
-                  width: "300px",
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                  position: "absolute",
-                  top: "30px",
-                  left: "0",
-                }}
-              >
-                <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
-              </div>
-            )}
-          </Grid>
-          <span
-            className="scores-text"
+    <Grid container spacing={2}>
+      <Grid item xs={4}>
+        <p>Implied Volatility:</p>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span className="scores-text">
+            {Number(volatility.implied_volatility)}
+          </span>
+        )}
+      </Grid>
+      <Grid item xs={4}>
+        <p>Historical Volatility:</p>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span className="scores-text">
+            {Number(volatility.historical_volatility)}
+          </span>
+        )}
+      </Grid>
+      <Grid item xs={4} style={{ position: "relative" }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          style={{ position: "relative" }}
+        >
+          <button
+            onClick={() => setShowInfo(!showInfo)}
             style={{
-              color: getColorForPrediction(overall_sentiment),
+              marginRight: "5px",
+              backgroundColor: "white",
+              color: "black",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              fontSize: "10px",
+              cursor: "pointer",
+              position: "relative",
             }}
           >
-            {overall_sentiment}
-          </span>
+            ?
+          </button>
+          <p>Overall News Sentiment:</p>
+          {showInfo && (
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "10px",
+                border: "1px solid #ddd",
+                borderRadius: "5px",
+                zIndex: 1000,
+                width: "300px",
+                maxHeight: "200px",
+                overflowY: "auto",
+                position: "absolute",
+                top: "30px",
+                left: "0",
+              }}
+            >
+              <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
+            </div>
+          )}
         </Grid>
-        <Grid item xs={12}>
-          <NewsCarousel news_articles={news_articles} />
-        </Grid>
+        <span
+          className="scores-text"
+          style={{
+            color: getColorForPrediction(overall_sentiment),
+          }}
+        >
+          {overall_sentiment}
+        </span>
       </Grid>
-    </Container>
+      <Grid item xs={12}>
+        <NewsCarousel news_articles={news_articles} />
+      </Grid>
+    </Grid>
   );
 };
 
