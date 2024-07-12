@@ -40,6 +40,9 @@ data_queue = None
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
 
+with open('OVERALL_SENTIMENT.txt', 'r') as file:
+    overall_sentiment = file.read().strip()
+
 def initialize_ticker(ticker: str):
     global garch_model, data_queue, arima_model
     data = fetch_data(ticker)
@@ -56,7 +59,6 @@ def train_ticker(ticker: str, no_save: bool = False):
         save_garch_model(ticker, garch_model)
         save_arima_model(ticker, arima_model)
 
-
 @app.route('/new_ticker', methods=['POST'])
 @cross_origin()
 def new_ticker():
@@ -66,7 +68,7 @@ def new_ticker():
     with open('TICKER.txt', 'w') as file:
         file.write(ticker)
     initialize_ticker(ticker)
-    socket_app.emit('inference', {'data': 'new ticker'}, namespace='/schedule')
+    socket_app.emit('update_ticker', {'data': ticker}, namespace='/schedule')
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
@@ -74,6 +76,9 @@ def news_sentiment():
     news_data = load_news_data(ticker)
     company_name = get_company_name(ticker)
     sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
+    overall_sentiment = sentiment_analysis['overall_sentiment']
+    with open('OVERALL_SENTIMENT.txt', 'w') as file:
+        file.write(overall_sentiment)
     return jsonify(sentiment_analysis), 200
 
 @app.route('/company_name', methods=['GET'])
@@ -87,6 +92,24 @@ def volatility():
         "historical_volatility": get_historical_volatility(ticker),
         "implied_volatility": get_implied_volatility(ticker),
     }), 200
+
+# @app.route('/make_decision', methods=['GET'])
+# def make_decision():
+#     current_price = fetch_data(ticker).iloc(-1)
+#     arima_prediction = 100
+#     garch_prediction = 100
+#     sentiment_score = overall_sentiment
+#     holding = False
+    
+#     decision = make_stock_decision(
+#         current_price, 
+#         arima_prediction, 
+#         garch_prediction, 
+#         sentiment_score, 
+#         holding
+#     )
+    
+#     return jsonify({"decision": decision}), 200
 
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
