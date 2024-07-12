@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 tsla
-=======
-tsla
->>>>>>> 0215cc309416baf58ac72e19f833debe6c51aeaf
