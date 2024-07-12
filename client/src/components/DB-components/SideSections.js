@@ -19,9 +19,11 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        const roundedImplied = Number(data.implied_volatility).toFixed(5);
+        const roundedHistorical = Number(data.historical_volatility).toFixed(5);
         setVolatility({
-          implied_volatility: data.implied_volatility,
-          historical_volatility: data.historical_volatility,
+          implied_volatility: roundedImplied,
+          historical_volatility: roundedHistorical,
         });
         setLoading(false);
       } catch (error) {
@@ -64,7 +66,9 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
           {loading ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
-            <span className="scores-text">{volatility.implied_volatility}</span>
+            <span className="scores-text">
+              {Number(volatility.implied_volatility)}
+            </span>
           )}
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
@@ -73,7 +77,7 @@ const SideSections = ({ overall_sentiment, news_articles }) => {
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {volatility.historical_volatility}
+              {Number(volatility.historical_volatility)}
             </span>
           )}
         </Grid>
