@@ -59,41 +59,6 @@ def train_ticker(ticker: str, no_save: bool = False):
         save_garch_model(ticker, garch_model)
         save_arima_model(ticker, arima_model)
 
-def make_stock_decision(
-        current_price, 
-        arima_prediction, 
-        garch_prediction, 
-        sentiment_score, 
-        holding = False, 
-        threshold = 0.02
-    ):
-    buy_threshold = threshold
-    sell_threshold = -threshold
-    
-    average_prediction = (arima_prediction + garch_prediction) / 2
-    
-    if sentiment_score == 'positive':
-        if average_prediction > current_price * (1 + buy_threshold) and not holding:
-            return 'buy'
-        elif holding and average_prediction < current_price * (1 + sell_threshold):
-            return 'sell'
-        else:
-            return 'hold'
-    elif sentiment_score == 'neutral':
-        if average_prediction > current_price and not holding:
-            return 'buy'
-        elif holding and average_prediction < current_price:
-            return 'sell'
-        else:
-            return 'hold'
-    elif sentiment_score == 'negative':
-        if holding:
-            return 'sell'
-        else:
-            return 'hold'
-    else:
-        raise ValueError("Invalid sentiment score. It must be 'positive', 'neutral', or 'negative'.")
-
 @app.route('/new_ticker', methods=['POST'])
 @cross_origin()
 def new_ticker():
@@ -103,6 +68,7 @@ def new_ticker():
     with open('TICKER.txt', 'w') as file:
         file.write(ticker)
     initialize_ticker(ticker)
+    socket_app.emit('update_ticker', {'data': ticker}, namespace='/schedule')
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
@@ -127,24 +93,6 @@ def volatility():
         "implied_volatility": get_implied_volatility(ticker),
     }), 200
 
-@app.route('/make_decision', methods=['GET'])
-def make_decision():
-    current_price = fetch_data(ticker).iloc(-1)
-    arima_prediction = 100
-    garch_prediction = 100
-    sentiment_score = overall_sentiment
-    holding = False
-    
-    decision = make_stock_decision(
-        current_price, 
-        arima_prediction, 
-        garch_prediction, 
-        sentiment_score, 
-        holding
-    )
-    
-    return jsonify({"decision": decision}), 200
-
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
     print(data)
@@ -152,4 +100,3 @@ def socket_inference(data):
 
 if __name__ == "__main__":
     socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
-
