@@ -1,40 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, CircularProgress } from "@mui/material";
-import predictionsData from "../../data/backendLoad.json";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = ({ implied_volatility, historical_volatility, overall_sentiment, news_articles}) => {
+const SideSections = ({ overall_sentiment, news_articles }) => {
   const [showInfo, setShowInfo] = useState(false);
-  // const [predictions, setPredictions] = useState({
-  //   implied_volatility: 0.0,
-  //   historical_volatility: 0.0,
-  //   overall_sentiment: "neutral",
-  //   news_articles: []
-  // });
+  const [loading, setLoading] = useState(true);
+  const [volatility, setVolatility] = useState({
+    implied_volatility: null,
+    historical_volatility: null,
+  });
 
-  // useEffect(() => {
-  //   const fetchPredictions = async () => {
-  //     try {
-  //       const response = await fetch("http://127.0.0.1:5000/news_sentiment");
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const news_data = await response.json();
-  //       setPredictions(() => ({
-  //         implied_volatility: predictionsData.implied_volatility,
-  //         historical_volatility: predictionsData.historical_volatility,
-  //         overall_sentiment: news_data.overall_sentiment,
-  //         news_articles: news_data.news_articles,
-  //       }));
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error("Error fetching predictions:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchVolatility = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/volatility");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setVolatility({
+          implied_volatility: data.implied_volatility,
+          historical_volatility: data.historical_volatility,
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching volatility data:", error);
+      }
+    };
 
-  //   fetchPredictions();
-  // }, []);
+    fetchVolatility();
+  }, []);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {
@@ -65,21 +61,19 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
       <Grid container spacing={2}>
         <Grid item xs={6} md={6} lg={6}>
           <p>Implied Volatility:</p>
-          {implied_volatility ? (
+          {loading ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
-            <span className="scores-text">
-              {implied_volatility}
-            </span>
+            <span className="scores-text">{volatility.implied_volatility}</span>
           )}
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
           <p>Historical Volatility:</p>
-          {historical_volatility ? (
+          {loading ? (
             <CircularProgress className="loading-container" size={50} />
           ) : (
             <span className="scores-text">
-              {historical_volatility}
+              {volatility.historical_volatility}
             </span>
           )}
         </Grid>
@@ -129,18 +123,14 @@ const SideSections = ({ implied_volatility, historical_volatility, overall_senti
               </div>
             )}
           </Grid>
-          {overall_sentiment ? (
-            <CircularProgress className="loading-container" size={50} />
-          ) : (
-            <span
-              className="scores-text"
-              style={{
-                color: getColorForPrediction(overall_sentiment),
-              }}
-            >
-              {overall_sentiment}
-            </span>
-          )}
+          <span
+            className="scores-text"
+            style={{
+              color: getColorForPrediction(overall_sentiment),
+            }}
+          >
+            {overall_sentiment}
+          </span>
         </Grid>
         <Grid item xs={12}>
           <NewsCarousel news_articles={news_articles} />
