@@ -46,11 +46,11 @@ const NewsCarousel = ({ news_articles = [] }) => {
       >
         News Overview:
       </p>
-      {loading ? (
+      {/* {loading ? (
         <div className="loading-container">
           <CircularProgress />
         </div>
-      ) : (
+      ) : ( */}
         <Carousel showThumbs={false} showStatus={false}>
           {articles.map((article, index) => (
             <div key={index} className="carousel-item">
@@ -89,7 +89,7 @@ const NewsCarousel = ({ news_articles = [] }) => {
             </div>
           ))}
         </Carousel>
-      )}
+      {/* )} */}
     </div>
   );
 };
