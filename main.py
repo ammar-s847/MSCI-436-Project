@@ -93,24 +93,6 @@ def volatility():
         "implied_volatility": get_implied_volatility(ticker),
     }), 200
 
-# @app.route('/make_decision', methods=['GET'])
-# def make_decision():
-#     current_price = fetch_data(ticker).iloc(-1)
-#     arima_prediction = 100
-#     garch_prediction = 100
-#     sentiment_score = overall_sentiment
-#     holding = False
-    
-#     decision = make_stock_decision(
-#         current_price, 
-#         arima_prediction, 
-#         garch_prediction, 
-#         sentiment_score, 
-#         holding
-#     )
-    
-#     return jsonify({"decision": decision}), 200
-
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
     print(data)
