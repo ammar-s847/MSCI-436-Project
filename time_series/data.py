@@ -15,5 +15,4 @@ def get_historical_volatility(ticker: str):
 def get_implied_volatility(ticker: str):
     """Fetches the volatility of a stock."""
     stock = yf.Ticker(ticker)
-    print(stock.options[0])
     return stock.option_chain(stock.options[0]).calls['impliedVolatility'].mean()

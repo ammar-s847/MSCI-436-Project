@@ -11,6 +11,7 @@ from time_series.garch import (
 )
 from time_series.arima import (
     train_arima_model,
+    load_arima_model,
     save_arima_model,
 )
 from time_series.data import (
@@ -43,7 +44,7 @@ def initialize_ticker(ticker: str):
     global garch_model, data_queue, arima_model
     data = fetch_data(ticker)
     garch_model = load_garch_model(ticker)
-    # arima_model = load_arima_model(ticker)
+    arima_model = load_arima_model(ticker)
     data_queue = deque(data[-10:], maxlen=10)
 
 def train_ticker(ticker: str, no_save: bool = False):
