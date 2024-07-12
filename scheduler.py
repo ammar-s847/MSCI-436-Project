@@ -52,7 +52,16 @@ def scheduled_job(ticker: str):
 def threaded_worker():
     while True:
         scheduled_job(ticker)
-        sio.emit('inference', {'garch': garch_pred_queue[-1], 'arima': arima_pred_queue[-1]}, namespace='/schedule')
+        event = sio.receive()
+        print(event)
+        sio.emit(
+            'inference', 
+            {
+                'garch': garch_pred_queue[-1], 
+                'arima': arima_pred_queue[-1]
+            }, 
+            namespace='/schedule'
+        )
         time.sleep(60)
 
 if __name__ == "__main__":

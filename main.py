@@ -66,6 +66,7 @@ def new_ticker():
     with open('TICKER.txt', 'w') as file:
         file.write(ticker)
     initialize_ticker(ticker)
+    socket_app.emit('inference', {'data': 'new ticker'}, namespace='/schedule')
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
@@ -94,4 +95,3 @@ def socket_inference(data):
 
 if __name__ == "__main__":
     socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
-
