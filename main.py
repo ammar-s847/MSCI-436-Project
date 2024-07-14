@@ -99,4 +99,4 @@ def socket_inference(data):
     socket_app.emit('inference', data, namespace='/schedule')
 
 if __name__ == "__main__":
-    socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
+    socket_app.run(app, debug=True, host='127.0.0.1', port=5000, allow_unsafe_werkzeug=True)
