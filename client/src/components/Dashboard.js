@@ -33,17 +33,17 @@ const Dashboard = forwardRef(
     },
     ref
   ) => {
-    const [age, setAge] = useState("");
+    const [action, setAction] = useState("");
     const [companyName, setCompanyName] = useState("");
     const ticker_Name = tickerName.toUpperCase();
 
     const handleChange = (event) => {
-      setAge(event.target.value);
+      setAction(event.target.value);
     };
 
     useImperativeHandle(ref, () => ({
       resetSelectBox() {
-        setAge("");
+        setAction("");
       },
     }));
 
@@ -99,9 +99,7 @@ const Dashboard = forwardRef(
                 Action
               </InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={age}
+                value={action}
                 label="Select"
                 onChange={handleChange}
                 sx={{
