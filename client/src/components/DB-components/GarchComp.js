@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CircularProgress } from "@mui/material";
 import io from "socket.io-client";
-import predictionsData from "../../data/backendLoad.json";
 import "../../styles/Comparisons.css";
 
 const socket = io("http://127.0.0.1:5000/schedule");
