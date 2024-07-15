@@ -73,6 +73,8 @@ def new_ticker():
 
 @app.route('/news_sentiment', methods=['GET'])
 def news_sentiment():
+    with open('TICKER.txt', 'r') as file:
+        ticker = file.read().strip()
     news_data = load_news_data(ticker)
     company_name = get_company_name(ticker)
     sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
@@ -83,11 +85,15 @@ def news_sentiment():
 
 @app.route('/company_name', methods=['GET'])
 def company_name():
+    with open('TICKER.txt', 'r') as file:
+        ticker = file.read().strip()
     company_name = get_company_name(ticker)
     return jsonify({"company_name": company_name}), 200
 
 @app.route('/volatility', methods=['GET'])
 def volatility():
+    with open('TICKER.txt', 'r') as file:
+        ticker = file.read().strip()
     return jsonify({
         "historical_volatility": get_historical_volatility(ticker),
         "implied_volatility": get_implied_volatility(ticker),

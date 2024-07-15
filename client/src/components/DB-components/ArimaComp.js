@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
-import predictionsData from "../../data/backendLoad.json";
+import { CircularProgress } from "@mui/material";
 import "../../styles/Comparisons.css";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
-const socket = io('http://127.0.0.1:5000/schedule');
+const socket = io("http://127.0.0.1:5000/schedule");
 
 const ArimaComp = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    socket.on('inference', (data) => {
+    socket.on("inference", (data) => {
       const roundedMessage = Number(data.arima).toFixed(2);
       setMessage(roundedMessage);
+      setLoading(false);
       console.log(roundedMessage);
     });
 
     return () => {
-      socket.off('inference');
+      socket.off("inference");
     };
   }, []);
 
@@ -33,12 +36,16 @@ const ArimaComp = () => {
     <>
       <p>Arima Scores:</p>
       <div>
-        <span
-          className="scores-text"
-          style={{ color: getColorForPrediction(Number(message)) }}
-        >
-          {message}
-        </span>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span
+            className="scores-text"
+            style={{ color: getColorForPrediction(Number(message)) }}
+          >
+            {message}
+          </span>
+        )}
       </div>
     </>
   );
