@@ -40,7 +40,7 @@ const Decision = ({ refresh }) => {
     <div className="decision-container">
       <p>Our Suggestion:</p>
       {loading ? (
-        <CircularProgress />
+        <CircularProgress className="loading-container" size={50} />
       ) : (
         <div>
           <span className={getClassName()}>{decision}</span>

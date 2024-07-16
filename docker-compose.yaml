@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  flask_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_api
+    environment:
+      - FINNHUB_API_KEY=
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scheduler
+    volumes:
+      - .:/app
+    command: python scheduler.py
+    depends_on:
+      - flask_api
+
+  react_app:
+    build:
+      context: ./client
+      dockerfile: client.Dockerfile
+    container_name: react_app
+    volumes:
+      - ./client:/app
+    ports:
+      - "3000:3000"

@@ -20,6 +20,9 @@ import ArimaComp from "./DB-components/ArimaComp";
 import SideSections from "./DB-components/SideSections";
 import Iframe from "react-iframe";
 import "../styles/Dashboard.css";
+import io from 'socket.io-client';
+
+const socket = io('http://127.0.0.1:5000/schedule');
 
 const Dashboard = forwardRef(
   (
@@ -40,6 +43,18 @@ const Dashboard = forwardRef(
     const handleChange = (event) => {
       setAction(event.target.value);
     };
+
+    const [message, setMessage] = useState('');
+    useEffect(() => {
+      socket.on('inference', (data) => {
+        setMessage(data.decision);
+        console.log(data.decision);
+      });
+
+      return () => {
+        socket.off('inference');
+      };
+    }, []);
 
     useImperativeHandle(ref, () => ({
       resetSelectBox() {

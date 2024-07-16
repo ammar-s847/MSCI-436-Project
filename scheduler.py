@@ -55,8 +55,10 @@ def make_stock_decision(
     
     if sentiment_score == 'positive':
         if average_prediction > current_price * (1 + buy_threshold) and not holding:
+            holding = True
             return 'buy'
         elif holding and average_prediction < current_price * (1 + sell_threshold):
+            holding = False
             return 'sell'
         else:
             return 'hold'
@@ -64,11 +66,13 @@ def make_stock_decision(
         if average_prediction > current_price and not holding:
             return 'buy'
         elif holding and average_prediction < current_price:
+            holding = False
             return 'sell'
         else:
             return 'hold'
     elif sentiment_score == 'negative':
         if holding:
+            holding = False
             return 'sell'
         else:
             return 'hold'
@@ -76,9 +80,9 @@ def make_stock_decision(
         raise ValueError("Invalid sentiment score. It must be 'positive', 'neutral', or 'negative'.")
 
 def scheduled_job(ticker: str):
-    global data_queue, pred_queue
+    global data_queue, pred_queue, decision_queue
     new_data = fetch_data(ticker)
-    data_queue = deque(new_data[-10:], maxlen=10)
+    data_queue.append(new_data[-1])
 
     garch_model = train_garch_model(new_data)
     garch_pred = forecast_garch(data_queue, garch_model)
@@ -111,9 +115,11 @@ def threaded_worker():
         garch_pred = garch_pred_queue[-1]
         arima_pred = arima_pred_queue[-1]
         decision = decision_queue[-1] if decision_queue else 'hold'
+        current_price = data_queue[-2]
         sio.emit(
             'inference', 
             {
+                'current': current_price,
                 'garch': garch_pred, 
                 'arima': arima_pred,
                 'decision': decision
@@ -122,9 +128,19 @@ def threaded_worker():
         )
         time.sleep(60)
 
+connected = False
+
 if __name__ == "__main__":
     initialize_ticker(ticker)
-    sio.connect(host, namespaces=['/schedule'])
+    # sio.connect(host, namespaces=['/schedule'])
+    while not connected:
+        try:
+            sio.connect(host, namespaces=['/schedule'])
+            print("Socket established")
+            connected = True
+        except Exception as ex:
+            print("Failed to establish initial connnection to server:", type(ex).__name__)
+            time.sleep(2)
     job_thread = threading.Thread(target=threaded_worker, daemon=True)
     job_thread.start()
     sio.wait()

@@ -36,6 +36,7 @@ socket_app = SocketIO(app, cors_allowed_origins="*")
 garch_model = None
 arima_model = None
 data_queue = None
+ticker = None
 
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
@@ -62,6 +63,7 @@ def train_ticker(ticker: str, no_save: bool = False):
 @app.route('/new_ticker', methods=['POST'])
 @cross_origin()
 def new_ticker():
+    global ticker
     data = request.json
     ticker = data['ticker']
     train_ticker(ticker)
@@ -72,6 +74,7 @@ def new_ticker():
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
+@cross_origin()
 def news_sentiment():
     with open('TICKER.txt', 'r') as file:
         ticker = file.read().strip()
@@ -84,6 +87,7 @@ def news_sentiment():
     return jsonify(sentiment_analysis), 200
 
 @app.route('/company_name', methods=['GET'])
+@cross_origin()
 def company_name():
     with open('TICKER.txt', 'r') as file:
         ticker = file.read().strip()
@@ -91,6 +95,7 @@ def company_name():
     return jsonify({"company_name": company_name}), 200
 
 @app.route('/volatility', methods=['GET'])
+@cross_origin()
 def volatility():
     with open('TICKER.txt', 'r') as file:
         ticker = file.read().strip()
@@ -105,4 +110,4 @@ def socket_inference(data):
     socket_app.emit('inference', data, namespace='/schedule')
 
 if __name__ == "__main__":
-    socket_app.run(app, debug=True, host='127.0.0.1', port=5000)
+    socket_app.run(app, debug=True, host='127.0.0.1', port=5000, allow_unsafe_werkzeug=True)
