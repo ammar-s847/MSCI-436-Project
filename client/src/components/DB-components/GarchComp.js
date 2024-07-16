@@ -5,11 +5,12 @@ import "../../styles/Comparisons.css";
 
 const socket = io("http://127.0.0.1:5000/schedule");
 
-const GarchComp = () => {
+const GarchComp = ({refresh}) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     socket.on("inference", (data) => {
       const roundedMessage = Number(data.garch).toFixed(2);
       setMessage(roundedMessage);
@@ -20,7 +21,7 @@ const GarchComp = () => {
     return () => {
       socket.off("inference");
     };
-  }, []);
+  }, [refresh]);
 
   const getColorForPrediction = (value) => {
     if (value < 100) {

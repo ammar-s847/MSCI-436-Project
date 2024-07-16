@@ -55,6 +55,7 @@ const Dashboard = forwardRef(
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
+          console.log("this is the data" + data)
           setCompanyName(data.company_name.toUpperCase());
         } catch (error) {
           console.error("Error fetching company name:", error);
@@ -62,7 +63,7 @@ const Dashboard = forwardRef(
       };
 
       fetchCompanyName();
-    }, []);
+    }, [tickerName]);
 
     const chart_Iframe_URL =
       "https://ammar-s847.github.io/TradingView-chart-Iframe/";
@@ -132,13 +133,13 @@ const Dashboard = forwardRef(
         </Grid2>
         <Grid2 sx={{ marginTop: "2rem" }} container spacing={4}>
           <Grid2 xs={6} md={4}>
-            <ArimaComp />
+            <ArimaComp refresh={tickerName}/>
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <GarchComp />
+            <GarchComp refresh={tickerName}/>
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <Decision outcome={"Buy"} />
+            <Decision refresh={tickerName} />
           </Grid2>
           <Grid2 xs={12} md={12}>
             <SideSections
@@ -146,6 +147,7 @@ const Dashboard = forwardRef(
               historical_volatility={historical_volatility}
               overall_sentiment={overall_sentiment}
               news_articles={news_articles}
+              refresh={tickerName}
             />
           </Grid2>
         </Grid2>
