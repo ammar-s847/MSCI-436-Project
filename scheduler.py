@@ -82,7 +82,7 @@ def make_stock_decision(
 def scheduled_job(ticker: str):
     global data_queue, pred_queue
     new_data = fetch_data(ticker)
-    data_queue = deque(new_data[-10:], maxlen=10)
+    data_queue.append(new_data[-1])
 
     garch_model = train_garch_model(new_data)
     garch_pred = forecast_garch(data_queue, garch_model)
@@ -115,9 +115,11 @@ def threaded_worker():
         garch_pred = garch_pred_queue[-1]
         arima_pred = arima_pred_queue[-1]
         decision = decision_queue[-1] if decision_queue else 'hold'
+        current_price = data_queue[-2]
         sio.emit(
             'inference', 
             {
+                'current': current_price,
                 'garch': garch_pred, 
                 'arima': arima_pred,
                 'decision': decision
