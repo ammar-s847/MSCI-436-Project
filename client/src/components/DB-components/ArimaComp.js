@@ -31,7 +31,7 @@ const ArimaComp = () => {
 
   return (
     <>
-      <p>Arima Scores:</p>
+      <p>Arima Prediction:</p>
       <div>
         <span
           className="scores-text"

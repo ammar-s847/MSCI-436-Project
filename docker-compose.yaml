@@ -7,11 +7,11 @@ services:
       dockerfile: Dockerfile
     container_name: flask_api
     environment:
-      - FINNHUB_API_KEY=cpsass9r01qkode17fi0cpsass9r01qkode17fig
+      - FINNHUB_API_KEY=
     volumes:
       - .:/app
     ports:
-      - "8080:5000"
+      - "5000:5000"
 
   scheduler:
     build:

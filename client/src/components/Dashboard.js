@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import {
   Container,
@@ -15,6 +15,9 @@ import ArimaComp from "./DB-components/ArimaComp";
 import SideSections from "./DB-components/SideSections";
 import Iframe from "react-iframe";
 import "../styles/Dashboard.css";
+import io from 'socket.io-client';
+
+const socket = io('http://127.0.0.1:5000/schedule');
 
 const Dashboard = forwardRef(
   (
@@ -34,6 +37,18 @@ const Dashboard = forwardRef(
     const handleChange = (event) => {
       setAge(event.target.value);
     };
+
+    const [message, setMessage] = useState('');
+    useEffect(() => {
+      socket.on('inference', (data) => {
+        setMessage(data.decision);
+        console.log(data.decision);
+      });
+
+      return () => {
+        socket.off('inference');
+      };
+    }, []);
 
     useImperativeHandle(ref, () => ({
       resetSelectBox() {
@@ -117,7 +132,7 @@ const Dashboard = forwardRef(
             <GarchComp />
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <Decision outcome={decision} />
+            <Decision outcome={message} />
           </Grid2>
           <Grid2 xs={12} md={12}>
             <SideSections

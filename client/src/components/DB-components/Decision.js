@@ -4,11 +4,11 @@ import "../../styles/Decision.css";
 const Decision = ({ outcome }) => {
   const getClassName = (outcome) => {
     switch (outcome) {
-      case "BUY":
+      case "buy":
         return "outcome buy";
-      case "SELL":
+      case "sell":
         return "outcome sell";
-      case "HOLD":
+      case "hold":
         return "outcome hold";
       default:
         return "outcome";

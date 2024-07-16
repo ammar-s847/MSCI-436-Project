@@ -55,8 +55,10 @@ def make_stock_decision(
     
     if sentiment_score == 'positive':
         if average_prediction > current_price * (1 + buy_threshold) and not holding:
+            holding = True
             return 'buy'
         elif holding and average_prediction < current_price * (1 + sell_threshold):
+            holding = False
             return 'sell'
         else:
             return 'hold'
@@ -64,11 +66,13 @@ def make_stock_decision(
         if average_prediction > current_price and not holding:
             return 'buy'
         elif holding and average_prediction < current_price:
+            holding = False
             return 'sell'
         else:
             return 'hold'
     elif sentiment_score == 'negative':
         if holding:
+            holding = False
             return 'sell'
         else:
             return 'hold'
@@ -122,9 +126,19 @@ def threaded_worker():
         )
         time.sleep(60)
 
+connected = False
+
 if __name__ == "__main__":
     initialize_ticker(ticker)
-    sio.connect(host, namespaces=['/schedule'])
+    # sio.connect(host, namespaces=['/schedule'])
+    while not connected:
+        try:
+            sio.connect(host, namespaces=['/schedule'])
+            print("Socket established")
+            connected = True
+        except Exception as ex:
+            print("Failed to establish initial connnection to server:", type(ex).__name__)
+            time.sleep(2)
     job_thread = threading.Thread(target=threaded_worker, daemon=True)
     job_thread.start()
     sio.wait()

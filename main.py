@@ -36,6 +36,7 @@ socket_app = SocketIO(app, cors_allowed_origins="*")
 garch_model = None
 arima_model = None
 data_queue = None
+ticker = None
 
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
@@ -62,6 +63,7 @@ def train_ticker(ticker: str, no_save: bool = False):
 @app.route('/new_ticker', methods=['POST'])
 @cross_origin()
 def new_ticker():
+    global ticker
     data = request.json
     ticker = data['ticker']
     train_ticker(ticker)
@@ -72,7 +74,9 @@ def new_ticker():
     return jsonify({"message": f"New ticker {ticker} trained."}), 200
 
 @app.route('/news_sentiment', methods=['GET'])
+@cross_origin()
 def news_sentiment():
+    global ticker
     news_data = load_news_data(ticker)
     company_name = get_company_name(ticker)
     sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
@@ -82,12 +86,15 @@ def news_sentiment():
     return jsonify(sentiment_analysis), 200
 
 @app.route('/company_name', methods=['GET'])
+@cross_origin()
 def company_name():
     company_name = get_company_name(ticker)
     return jsonify({"company_name": company_name}), 200
 
 @app.route('/volatility', methods=['GET'])
+@cross_origin()
 def volatility():
+    global ticker
     return jsonify({
         "historical_volatility": get_historical_volatility(ticker),
         "implied_volatility": get_implied_volatility(ticker),

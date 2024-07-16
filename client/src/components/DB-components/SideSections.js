@@ -52,7 +52,7 @@ const SideSections = () => {
 
     fetchVolatility();
     fetchNewsSentiment();
-  }, []);
+  }, [setNewsData]);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {

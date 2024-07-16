@@ -35,7 +35,7 @@ const GarchComp = () => {
 
   return (
     <>
-      <p>Garch Scores:</p>
+      <p>Garch Prediction:</p>
       <div>
         {loading ? (
           <CircularProgress className="loading-container" size={50} />
