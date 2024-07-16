@@ -3,9 +3,10 @@ import { Container, Grid, CircularProgress } from "@mui/material";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = () => {
+const SideSections = ({refresh}) => {
   const [showInfo, setShowInfo] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingVolatility, setLoadingVolatility] = useState(true);
+  const [loadingNews, setLoadingNews] = useState(true);
   const [volatility, setVolatility] = useState({
     implied_volatility: 0.0,
     historical_volatility: 0.0,
@@ -16,6 +17,7 @@ const SideSections = () => {
   });
 
   useEffect(() => {
+    setLoadingVolatility(true);
     const fetchVolatility = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/volatility");
@@ -27,12 +29,13 @@ const SideSections = () => {
           implied_volatility: Number(data.implied_volatility).toFixed(5),
           historical_volatility: Number(data.historical_volatility).toFixed(5),
         });
-        setLoading(false);
+        setLoadingVolatility(false);
       } catch (error) {
         console.error("Error fetching volatility data:", error);
       }
     };
 
+    setLoadingNews(true);
     const fetchNewsSentiment = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/news_sentiment");
@@ -44,7 +47,7 @@ const SideSections = () => {
           overall_sentiment: data.overall_sentiment,
           news_articles: data.news_articles,
         });
-        setLoading(false);
+        setLoadingNews(false);
       } catch (error) {
         console.error("Error fetching news sentiment:", error);
       }
@@ -52,7 +55,7 @@ const SideSections = () => {
 
     fetchVolatility();
     fetchNewsSentiment();
-  }, [setNewsData]);
+  }, [refresh]);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {
@@ -82,7 +85,7 @@ const SideSections = () => {
     <Grid container spacing={2}>
       <Grid item xs={4}>
         <p>Implied Volatility:</p>
-        {loading ? (
+        {loadingVolatility ? (
           <CircularProgress className="loading-container" size={50} />
         ) : (
           <span className="scores-text">{volatility.implied_volatility}</span>
@@ -90,7 +93,7 @@ const SideSections = () => {
       </Grid>
       <Grid item xs={4}>
         <p>Historical Volatility:</p>
-        {loading ? (
+        {loadingVolatility ? (
           <CircularProgress className="loading-container" size={50} />
         ) : (
           <span className="scores-text">
@@ -144,14 +147,18 @@ const SideSections = () => {
             </div>
           )}
         </Grid>
-        <span
-          className="scores-text"
-          style={{
-            color: getColorForPrediction(newsData.overall_sentiment),
-          }}
-        >
-          {newsData.overall_sentiment}
-        </span>
+        {loadingNews ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span
+            className="scores-text"
+            style={{
+              color: getColorForPrediction(newsData.overall_sentiment),
+            }}
+          >
+            {newsData.overall_sentiment}
+          </span>
+        )}
       </Grid>
       <Grid item xs={12}>
         <NewsCarousel news_articles={newsData.news_articles} />

@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { CircularProgress } from "@mui/material";
 import "../../styles/Decision.css";
+import io from "socket.io-client";
 
-const Decision = ({ outcome }) => {
-  const getClassName = (outcome) => {
-    switch (outcome) {
+// Initialize socket connection
+const socket = io("http://127.0.0.1:5000/schedule");
+
+const Decision = ({ refresh }) => {
+  const [decision, setDecision] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    socket.on("inference", (data) => {
+      const roundedMessage = data.decision;
+      setDecision(roundedMessage);
+      setLoading(false);
+    });
+
+    return () => {
+      socket.off("inference");
+    };
+  }, [refresh]);
+
+  const getClassName = () => {
+    switch (decision) {
       case "buy":
         return "outcome buy";
       case "sell":
@@ -16,13 +37,18 @@ const Decision = ({ outcome }) => {
   };
 
   return (
-    <>
+    <div className="decision-container">
       <p>Our Suggestion:</p>
-      <div>
-        <span className={getClassName(outcome)}>{outcome}</span>
-      </div>
-    </>
+      {loading ? (
+        <CircularProgress className="loading-container" size={50} />
+      ) : (
+        <div>
+          <span className={getClassName()}>{decision}</span>
+        </div>
+      )}
+    </div>
   );
 };
 
 export default Decision;
+

@@ -80,7 +80,7 @@ def make_stock_decision(
         raise ValueError("Invalid sentiment score. It must be 'positive', 'neutral', or 'negative'.")
 
 def scheduled_job(ticker: str):
-    global data_queue, pred_queue
+    global data_queue, pred_queue, decision_queue
     new_data = fetch_data(ticker)
     data_queue.append(new_data[-1])
 

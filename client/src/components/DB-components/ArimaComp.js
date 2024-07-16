@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from "react";
-import predictionsData from "../../data/backendLoad.json";
+import { CircularProgress } from "@mui/material";
 import "../../styles/Comparisons.css";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
-const socket = io('http://127.0.0.1:5000/schedule');
+const socket = io("http://127.0.0.1:5000/schedule");
 
-const ArimaComp = () => {
-  const [predicted, setPredicted] = useState('');
-  const [current, setCurrent] = useState('');
+const ArimaComp = ({refresh}) => {
+  const [predicted, setPredicted] = useState("");
+  const [current, setCurrent] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    socket.on('inference', (data) => {
-      const roundedMessage = Number(data.arima).toFixed(2);
+    setLoading(true);
+    socket.on("inference", (data) => {
+      const roundedPredicted = Number(data.arima).toFixed(2);
+      setPredicted(roundedPredicted);
+      console.log(roundedPredicted);
       const roundedCurrent = Number(data.current).toFixed(2)
-      setPredicted(roundedMessage);
       setCurrent(roundedCurrent);
-      console.log(roundedMessage);
       console.log(roundedCurrent);
+      setLoading(false);
     });
 
     return () => {
-      socket.off('inference');
+      socket.off("inference");
     };
-  }, []);
+  }, [refresh]);
 
   const getColorForPrediction = (current, predicted) => {
     if (Number(predicted) > Number(current)) {
@@ -37,12 +41,16 @@ const ArimaComp = () => {
     <>
       <p>Arima Prediction:</p>
       <div>
-        <span
-          className="scores-text"
-          style={{ color: getColorForPrediction(Number(current), Number(predicted)) }}
-        >
-          {predicted}
-        </span>
+        {loading ? (
+          <CircularProgress className="loading-container" size={50} />
+        ) : (
+          <span
+            className="scores-text"
+            style={{ color: getColorForPrediction(Number(current), Number(predicted)) }}
+          >
+            {predicted}
+          </span>
+        )}
       </div>
     </>
   );

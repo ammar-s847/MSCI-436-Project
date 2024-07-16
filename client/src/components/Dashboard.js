@@ -1,4 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import {
   Container,
@@ -23,7 +28,6 @@ const Dashboard = forwardRef(
   (
     {
       tickerName,
-      companyName,
       decision,
       implied_volatility,
       historical_volatility,
@@ -32,10 +36,12 @@ const Dashboard = forwardRef(
     },
     ref
   ) => {
-    const [age, setAge] = React.useState("");
+    const [action, setAction] = useState("");
+    const [companyName, setCompanyName] = useState("");
     const ticker_Name = tickerName.toUpperCase();
+
     const handleChange = (event) => {
-      setAge(event.target.value);
+      setAction(event.target.value);
     };
 
     const [message, setMessage] = useState('');
@@ -52,9 +58,27 @@ const Dashboard = forwardRef(
 
     useImperativeHandle(ref, () => ({
       resetSelectBox() {
-        setAge("");
+        setAction("");
       },
     }));
+
+    useEffect(() => {
+      const fetchCompanyName = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/company_name");
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("this is the data" + data)
+          setCompanyName(data.company_name.toUpperCase());
+        } catch (error) {
+          console.error("Error fetching company name:", error);
+        }
+      };
+
+      fetchCompanyName();
+    }, [tickerName]);
 
     const chart_Iframe_URL =
       "https://ammar-s847.github.io/TradingView-chart-Iframe/";
@@ -91,9 +115,7 @@ const Dashboard = forwardRef(
                 Action
               </InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={age}
+                value={action}
                 label="Select"
                 onChange={handleChange}
                 sx={{
@@ -126,13 +148,13 @@ const Dashboard = forwardRef(
         </Grid2>
         <Grid2 sx={{ marginTop: "2rem" }} container spacing={4}>
           <Grid2 xs={6} md={4}>
-            <ArimaComp />
+            <ArimaComp refresh={tickerName}/>
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <GarchComp />
+            <GarchComp refresh={tickerName}/>
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <Decision outcome={message} />
+            <Decision refresh={tickerName} />
           </Grid2>
           <Grid2 xs={12} md={12}>
             <SideSections
@@ -140,6 +162,7 @@ const Dashboard = forwardRef(
               historical_volatility={historical_volatility}
               overall_sentiment={overall_sentiment}
               news_articles={news_articles}
+              refresh={tickerName}
             />
           </Grid2>
         </Grid2>
