@@ -3,7 +3,7 @@ import { Container, Grid, CircularProgress } from "@mui/material";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
-const SideSections = () => {
+const SideSections = ({refresh}) => {
   const [showInfo, setShowInfo] = useState(false);
   const [loadingVolatility, setLoadingVolatility] = useState(true);
   const [loadingNews, setLoadingNews] = useState(true);
@@ -17,6 +17,7 @@ const SideSections = () => {
   });
 
   useEffect(() => {
+    setLoadingVolatility(true);
     const fetchVolatility = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/volatility");
@@ -34,6 +35,7 @@ const SideSections = () => {
       }
     };
 
+    setLoadingNews(true);
     const fetchNewsSentiment = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/news_sentiment");
@@ -53,7 +55,7 @@ const SideSections = () => {
 
     fetchVolatility();
     fetchNewsSentiment();
-  }, []);
+  }, [refresh]);
 
   const getColorForPrediction = (value) => {
     if (value === "negative") {
