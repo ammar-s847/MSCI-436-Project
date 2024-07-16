@@ -17,6 +17,4 @@ def modified_scheduled_job():
     print(f"Trades: {trades}")
 
 if __name__ == "__main__":
-    # modified_scheduled_job()
-    print(decision_queue)
-    print()
+    modified_scheduled_job()
