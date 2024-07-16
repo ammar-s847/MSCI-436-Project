@@ -5,7 +5,7 @@ from psycopg2 import sql
 conn_params = {
     'dbname': 'postgres',
     'user': 'postgres',
-    'password': 'u472h46a',
+    'password': '',
     'host': 'localhost',
     'port': '5432'
 }
