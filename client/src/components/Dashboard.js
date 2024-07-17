@@ -28,7 +28,6 @@ const Dashboard = forwardRef(
   (
     {
       tickerName,
-      decision,
       implied_volatility,
       historical_volatility,
       overall_sentiment,
@@ -39,22 +38,69 @@ const Dashboard = forwardRef(
     const [action, setAction] = useState("");
     const [companyName, setCompanyName] = useState("");
     const ticker_Name = tickerName.toUpperCase();
+    const [decision, setDecision] = useState("");
+    const [currentPrice, setCurrentPrice] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-    const handleChange = (event) => {
-      setAction(event.target.value);
+    const handleChange = async (event) => {
+      const position = event.target.value;
+      setAction(position);
+  
+      const id = generateUUID();
+      const createdAt = new Date().toISOString();
+      
+      const tradeData = {
+        id,
+        symbol: tickerName,
+        price: currentPrice,
+        position,
+        created_at: createdAt,
+        user: "user"
+      };
+
+      console.log(tradeData)
+  
+      try {
+        const response = await fetch('http://127.0.0.1:5000/trade', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tradeData),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          console.log('Trade created successfully:', result);
+        } else {
+          console.error('Failed to create trade:', result);
+        }
+      } catch (error) {
+        console.error('Error creating trade:', error);
+      }
     };
 
-    const [message, setMessage] = useState('');
-    useEffect(() => {
-      socket.on('inference', (data) => {
-        setMessage(data.decision);
-        console.log(data.decision);
+    const generateUUID = () => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0,
+              v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
       });
+    };
 
+    useEffect(() => {
+      setLoading(true);
+      socket.on("inference", (data) => {
+        const roundedMessage = data.decision;
+        setDecision(roundedMessage);
+        setCurrentPrice(data.current);
+        setLoading(false);
+      });
+  
       return () => {
-        socket.off('inference');
+        socket.off("inference");
       };
-    }, []);
+    }, [tickerName]);
 
     useImperativeHandle(ref, () => ({
       resetSelectBox() {
@@ -62,6 +108,27 @@ const Dashboard = forwardRef(
       },
     }));
 
+    const postTickerData = async (tickerData) => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ticker', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tickerData),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log('Ticker created successfully:', result);
+        } else {
+          console.error('Failed to create ticker:', result);
+        }
+      } catch (error) {
+        console.error('Error creating ticker:', error);
+      }
+    };
+    
     useEffect(() => {
       const fetchCompanyName = async () => {
         try {
@@ -78,7 +145,26 @@ const Dashboard = forwardRef(
       };
 
       fetchCompanyName();
+
     }, [tickerName]);
+
+    useEffect(() => {
+
+      const createdAt = new Date().toISOString();
+
+      const tickerData = {
+        name: companyName,
+        symbol: tickerName,
+        created_at: createdAt,
+      };
+
+      console.log(tickerData)
+
+      if (companyName !== '') {
+        postTickerData(tickerData);
+      }
+
+    }, [companyName]);
 
     const chart_Iframe_URL =
       "https://ammar-s847.github.io/TradingView-chart-Iframe/";
@@ -123,9 +209,9 @@ const Dashboard = forwardRef(
                   "& .MuiSvgIcon-root": { color: "white" },
                 }}
               >
-                <MenuItem value="Buying">I bought</MenuItem>
-                <MenuItem value="Holding">I held</MenuItem>
-                <MenuItem value="Selling">I sold</MenuItem>
+                <MenuItem value="b">I bought</MenuItem>
+                <MenuItem value="h">I held</MenuItem>
+                <MenuItem value="s">I sold</MenuItem>
               </Select>
             </FormControl>
           </Grid2>
@@ -154,7 +240,7 @@ const Dashboard = forwardRef(
             <GarchComp refresh={tickerName}/>
           </Grid2>
           <Grid2 xs={6} md={4}>
-            <Decision refresh={tickerName} />
+            <Decision decision={decision} loading={loading}/>
           </Grid2>
           <Grid2 xs={12} md={12}>
             <SideSections

@@ -1,10 +1,34 @@
--- Create the database (this part usually done from a superuser context or via a separate command)
--- CREATE DATABASE "msci-436-project"; 
+import psycopg2
+from psycopg2 import sql
 
--- Connect to the database
-\c "msci-436-project"
+# Database connection parameters
+conn_params = {
+    'dbname': 'postgres',
+    'user': 'postgres',
+    'password': '',
+    'host': 'localhost',
+    'port': '5432'
+}
 
--- Create the ticker table
+# Connect to PostgreSQL
+conn = psycopg2.connect(**conn_params)
+conn.autocommit = True
+cur = conn.cursor()
+
+# Create the new database
+cur.execute("CREATE DATABASE \"msci-436-project\"")
+
+# Close connection to 'postgres' database
+cur.close()
+conn.close()
+
+# Connect to the new database
+conn_params['dbname'] = 'msci-436-project'
+conn = psycopg2.connect(**conn_params)
+cur = conn.cursor()
+
+# Schema SQL
+schema_sql = """
 CREATE TABLE IF NOT EXISTS ticker (
     name varchar(255) NOT NULL,
     symbol varchar(10) NOT NULL,
@@ -12,7 +36,6 @@ CREATE TABLE IF NOT EXISTS ticker (
     PRIMARY KEY (symbol)
 );
 
--- Create the trade table
 CREATE TABLE IF NOT EXISTS trade (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     symbol varchar(10) NOT NULL,
@@ -35,3 +58,12 @@ WHERE symbol = 'tsla'
 SELECT * 
 FROM trade 
 WHERE symbol = 'ticker_symbol';
+"""
+
+# Execute the schema SQL
+cur.execute(schema_sql)
+conn.commit()
+
+# Close the connection
+cur.close()
+conn.close()

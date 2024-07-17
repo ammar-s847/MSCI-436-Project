@@ -3,6 +3,9 @@ from collections import deque
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 from flask_cors import CORS, cross_origin
+import psycopg2
+from psycopg2 import sql
+import uuid
 
 from time_series.garch import (
     train_garch_model, 
@@ -37,6 +40,17 @@ garch_model = None
 arima_model = None
 data_queue = None
 ticker = None
+
+conn_params = {
+    'dbname': 'msci-436-project',
+    'user': 'postgres',
+    'password': '',
+    'host': 'localhost',
+    'port': '5432'
+}
+
+def get_db_connection():
+    return psycopg2.connect(**conn_params)
 
 with open('TICKER.txt', 'r') as file:
     ticker = file.read().strip()
@@ -103,6 +117,55 @@ def volatility():
         "historical_volatility": get_historical_volatility(ticker),
         "implied_volatility": get_implied_volatility(ticker),
     }), 200
+
+@app.route('/trade', methods=['POST'])
+def create_trade():
+    data = request.json
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    query = sql.SQL("""
+        INSERT INTO trade (id, symbol, price, position, created_at, "user")
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """)
+    
+    cur.execute(query, (
+        data['id'],
+        data['symbol'],
+        data['price'],
+        data['position'],
+        data['created_at'],
+        data['user']
+    ))
+    
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return jsonify({"message": "Trade created successfully"}), 201
+
+@app.route('/ticker', methods=['POST'])
+def create_ticker():
+    data = request.json
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    query = sql.SQL("""
+        INSERT INTO ticker (name, symbol, created_at)
+        VALUES (%s, %s, %s)
+    """)
+    
+    cur.execute(query, (
+        data['name'],
+        data['symbol'],
+        data['created_at'],
+    ))
+    
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return jsonify({"message": "Ticker created successfully"}), 201
 
 @socket_app.on('inference', namespace='/schedule')
 def socket_inference(data):
