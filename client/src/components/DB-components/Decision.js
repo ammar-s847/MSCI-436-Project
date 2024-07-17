@@ -3,25 +3,25 @@ import { CircularProgress } from "@mui/material";
 import "../../styles/Decision.css";
 import io from "socket.io-client";
 
-// Initialize socket connection
-const socket = io("http://127.0.0.1:5000/schedule");
+// // Initialize socket connection
+// const socket = io("http://127.0.0.1:5000/schedule");
 
-const Decision = ({ refresh }) => {
-  const [decision, setDecision] = useState("");
-  const [loading, setLoading] = useState(true);
+const Decision = ({ decision, loading }) => {
+  // const [decision, setDecision] = useState("");
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    socket.on("inference", (data) => {
-      const roundedMessage = data.decision;
-      setDecision(roundedMessage);
-      setLoading(false);
-    });
+  // useEffect(() => {
+  //   setLoading(true);
+  //   socket.on("inference", (data) => {
+  //     const roundedMessage = data.decision;
+  //     setDecision(roundedMessage);
+  //     setLoading(false);
+  //   });
 
-    return () => {
-      socket.off("inference");
-    };
-  }, [refresh]);
+  //   return () => {
+  //     socket.off("inference");
+  //   };
+  // }, [refresh]);
 
   const getClassName = () => {
     switch (decision) {
