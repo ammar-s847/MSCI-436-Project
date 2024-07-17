@@ -157,7 +157,7 @@ def create_ticker():
     
     cur.execute(query, (
         data['name'],
-        data['price'],
+        data['symbol'],
         data['created_at'],
     ))
     

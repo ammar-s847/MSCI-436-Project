@@ -49,8 +49,6 @@ const Dashboard = forwardRef(
       const id = generateUUID();
       const createdAt = new Date().toISOString();
       
-      // position = b if buy, s if sell, h if hold
-
       const tradeData = {
         id,
         symbol: tickerName,
@@ -109,6 +107,27 @@ const Dashboard = forwardRef(
         setAction("");
       },
     }));
+
+    const postTickerData = async (tickerData) => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/ticker', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tickerData),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log('Ticker created successfully:', result);
+        } else {
+          console.error('Failed to create ticker:', result);
+        }
+      } catch (error) {
+        console.error('Error creating ticker:', error);
+      }
+    };
     
     useEffect(() => {
       const fetchCompanyName = async () => {
@@ -126,7 +145,26 @@ const Dashboard = forwardRef(
       };
 
       fetchCompanyName();
+
     }, [tickerName]);
+
+    useEffect(() => {
+
+      const createdAt = new Date().toISOString();
+
+      const tickerData = {
+        name: companyName,
+        symbol: tickerName,
+        created_at: createdAt,
+      };
+
+      console.log(tickerData)
+
+      if (companyName !== '') {
+        postTickerData(tickerData);
+      }
+
+    }, [companyName]);
 
     const chart_Iframe_URL =
       "https://ammar-s847.github.io/TradingView-chart-Iframe/";
@@ -171,9 +209,9 @@ const Dashboard = forwardRef(
                   "& .MuiSvgIcon-root": { color: "white" },
                 }}
               >
-                <MenuItem value="Buying">I bought</MenuItem>
-                <MenuItem value="Holding">I held</MenuItem>
-                <MenuItem value="Selling">I sold</MenuItem>
+                <MenuItem value="b">I bought</MenuItem>
+                <MenuItem value="h">I held</MenuItem>
+                <MenuItem value="s">I sold</MenuItem>
               </Select>
             </FormControl>
           </Grid2>
