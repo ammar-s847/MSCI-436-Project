@@ -42,23 +42,54 @@ const Dashboard = forwardRef(
     const [currentPrice, setCurrentPrice] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    function mapDecisionToCode(decision) {
+      let code;
+    
+      switch (decision.toLowerCase()) { // Convert to lowercase to make the comparison case-insensitive
+        case 'hold':
+          code = 'h';
+          break;
+        case 'buy':
+          code = 'b';
+          break;
+        case 'sell':
+          code = 's';
+          break;
+        default:
+          code = ''; // Handle unexpected values, if necessary
+      }
+    
+      return code;
+    };
+
     const handleChange = async (event) => {
       const position = event.target.value;
       setAction(position);
   
-      const id = generateUUID();
+      const id_user = generateUUID();
+      const id_engine = generateUUID();
       const createdAt = new Date().toISOString();
       
       const tradeData = {
-        id,
+        id: id_user,
         symbol: tickerName,
         price: currentPrice,
-        position,
+        position: position,
         created_at: createdAt,
         user: "user"
       };
 
+      const tradeEngineData = {
+        id: id_engine,
+        symbol: tickerName,
+        price: currentPrice,
+        position: mapDecisionToCode(decision),
+        created_at: createdAt,
+        user: "engine"
+      };
+
       console.log(tradeData)
+      console.log(tradeEngineData)
   
       try {
         const response = await fetch('http://127.0.0.1:5000/trade', {
@@ -67,6 +98,25 @@ const Dashboard = forwardRef(
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(tradeData),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          console.log('Trade created successfully:', result);
+        } else {
+          console.error('Failed to create trade:', result);
+        }
+      } catch (error) {
+        console.error('Error creating trade:', error);
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/trade', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tradeEngineData),
         });
   
         const result = await response.json();
