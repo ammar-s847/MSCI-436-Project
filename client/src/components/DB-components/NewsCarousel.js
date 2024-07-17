@@ -5,13 +5,12 @@ import { CircularProgress, Grid } from "@mui/material";
 import "../../styles/NewsCarousel.css";
 
 const NewsCarousel = ({ news_articles = [] }) => {
-  const [loading, setLoading] = useState(true);
+
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     if (news_articles.length > 0) {
       setArticles(news_articles);
-      setLoading(false);
     }
   }, [news_articles]);
 
@@ -39,18 +38,6 @@ const NewsCarousel = ({ news_articles = [] }) => {
 
   return (
     <div>
-      <p
-        style={{
-          marginBottom: "20px",
-        }}
-      >
-        News Overview:
-      </p>
-      {loading ? (
-        <div className="loading-container">
-          <CircularProgress />
-        </div>
-      ) : (
         <Carousel showThumbs={false} showStatus={false}>
           {articles.map((article, index) => (
             <div key={index} className="carousel-item">
@@ -89,7 +76,6 @@ const NewsCarousel = ({ news_articles = [] }) => {
             </div>
           ))}
         </Carousel>
-      )}
     </div>
   );
 };
