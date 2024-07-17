@@ -3,7 +3,7 @@ import { CircularProgress } from "@mui/material";
 import "../../styles/Decision.css";
 import io from "socket.io-client";
 
-// Initialize socket connection
+
 const socket = io("http://127.0.0.1:5000/schedule");
 
 const Decision = ({ refresh }) => {

@@ -7,6 +7,7 @@ const SideSections = ({refresh}) => {
   const [showInfo, setShowInfo] = useState(false);
   const [loadingVolatility, setLoadingVolatility] = useState(true);
   const [loadingNews, setLoadingNews] = useState(true);
+  const [loadingNewsArticle, setLoadingNewsArticle] = useState(true);
   const [volatility, setVolatility] = useState({
     implied_volatility: 0.0,
     historical_volatility: 0.0,
@@ -36,6 +37,7 @@ const SideSections = ({refresh}) => {
     };
 
     setLoadingNews(true);
+    setLoadingNewsArticle(true);
     const fetchNewsSentiment = async () => {
       try {
         const response = await fetch("http://127.0.0.1:5000/news_sentiment");
@@ -48,6 +50,7 @@ const SideSections = ({refresh}) => {
           news_articles: data.news_articles,
         });
         setLoadingNews(false);
+        setLoadingNewsArticle(false);
       } catch (error) {
         console.error("Error fetching news sentiment:", error);
       }
@@ -161,7 +164,18 @@ const SideSections = ({refresh}) => {
         )}
       </Grid>
       <Grid item xs={12}>
+      <p
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        News Overview:
+      </p>
+      {loadingNewsArticle ? (
+                 <CircularProgress className="loading-container" size={50}/>
+      ) : (
         <NewsCarousel news_articles={newsData.news_articles} />
+      )}
       </Grid>
     </Grid>
   );
