@@ -68,6 +68,14 @@
   margin: 0px;
 }
 
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  text-align: center;
+  padding-top: 20px;
+}
+
 @media (min-width: 600px) {
   .hero-container {
     padding-top: 20rem;
