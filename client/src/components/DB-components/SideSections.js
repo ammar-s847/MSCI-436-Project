@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, CircularProgress } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2";
 import NewsCarousel from "./NewsCarousel";
 import "../../styles/Comparisons.css";
 
@@ -85,16 +86,16 @@ const SideSections = ({refresh}) => {
   `;
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={4}>
+    <Grid2 container spacing={2}>
+      <Grid2 item xs={4}>
         <p>Implied Volatility:</p>
         {loadingVolatility ? (
           <CircularProgress className="loading-container" size={50} />
         ) : (
           <span className="scores-text">{volatility.implied_volatility}</span>
         )}
-      </Grid>
-      <Grid item xs={4}>
+      </Grid2>
+      <Grid2 item xs={4}>
         <p>Historical Volatility:</p>
         {loadingVolatility ? (
           <CircularProgress className="loading-container" size={50} />
@@ -103,9 +104,9 @@ const SideSections = ({refresh}) => {
             {volatility.historical_volatility}
           </span>
         )}
-      </Grid>
-      <Grid item xs={4} style={{ position: "relative" }}>
-        <Grid
+      </Grid2>
+      <Grid2 item xs={4}>
+        <Grid2
           container
           direction="row"
           justifyContent="flex-start"
@@ -149,7 +150,7 @@ const SideSections = ({refresh}) => {
               <p style={{ fontSize: "15px", color: "black" }}>{infoText}</p>
             </div>
           )}
-        </Grid>
+        </Grid2>
         {loadingNews ? (
           <CircularProgress className="loading-container" size={50} />
         ) : (
@@ -162,8 +163,8 @@ const SideSections = ({refresh}) => {
             {newsData.overall_sentiment}
           </span>
         )}
-      </Grid>
-      <Grid item xs={12}>
+      </Grid2>
+      <Grid2 item xs={12}>
       <p
         style={{
           marginBottom: "20px",
@@ -176,8 +177,8 @@ const SideSections = ({refresh}) => {
       ) : (
         <NewsCarousel news_articles={newsData.news_articles} />
       )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 
