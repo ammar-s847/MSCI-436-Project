@@ -1,4 +1,3 @@
-
 #TODO store trades
 # tuple of buy or sell
 # output the array

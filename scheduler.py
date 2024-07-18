@@ -18,7 +18,7 @@ from time_series.data import fetch_data
 
 sio = socketio.Client(engineio_logger=True)
 
-with open('TICKER.txt', 'r') as file:
+with open('./metadata/TICKER.txt', 'r') as file:
     ticker = file.read().strip()
 
 port = 5000
@@ -30,40 +30,44 @@ garch_model = None
 garch_pred_queue = deque(maxlen=10)
 arima_model = None
 arima_pred_queue = deque(maxlen=10)
+holding = True
+trades = []
+total_pnl = 0
 
 def initialize_ticker(ticker: str):
-    global garch_model, arima_model, data_queue, sentiment
+    global garch_model, arima_model, data_queue, sentiment, holding
+    holding = False
     data = fetch_data(ticker)
     garch_model = load_garch_model(ticker)
     arima_model = load_arima_model(ticker)
     data_queue = deque(data[-10:], maxlen=10)
-    with open('OVERALL_SENTIMENT.txt', 'r') as file:
+    with open('./metadata/OVERALL_SENTIMENT.txt', 'r') as file:
         sentiment = file.read().strip()
 
 def make_stock_decision(
         current_price: float, 
         arima_prediction: float, 
         garch_prediction: float, 
-        sentiment_score: str, 
-        holding: bool = False, 
-        threshold: float = 0.02
+        sentiment_score: str,  
+        threshold: float = 0.01
     ):
-    buy_threshold = threshold
-    sell_threshold = -threshold
+    global holding
     
     average_prediction = (arima_prediction + garch_prediction) / 2
+    print(average_prediction, current_price)
     
     if sentiment_score == 'positive':
-        if average_prediction > current_price * (1 + buy_threshold) and not holding:
+        if average_prediction > current_price * (1 + threshold) and not holding:
             holding = True
             return 'buy'
-        elif holding and average_prediction < current_price * (1 + sell_threshold):
+        elif holding and average_prediction < current_price * (1 - threshold):
             holding = False
             return 'sell'
         else:
             return 'hold'
     elif sentiment_score == 'neutral':
         if average_prediction > current_price and not holding:
+            holding = True
             return 'buy'
         elif holding and average_prediction < current_price:
             holding = False
@@ -97,7 +101,6 @@ def scheduled_job(ticker: str):
             arima_prediction=arima_pred,
             garch_prediction=garch_pred,
             sentiment_score=sentiment,
-            holding=True if decision_queue and decision_queue[-1] in ['hold', 'buy'] else False
         )
     decision_queue.append(decision)
 
@@ -109,13 +112,19 @@ def update_ticker(data):
     print('Updating tracked ticker to ', ticker)
 
 def threaded_worker():
-    global data_queue, sentiment, garch_pred_queue, arima_pred_queue
+    global data_queue, sentiment, garch_pred_queue, arima_pred_queue, total_pnl
     while True:
         scheduled_job(ticker)
         garch_pred = garch_pred_queue[-1]
         arima_pred = arima_pred_queue[-1]
         decision = decision_queue[-1] if decision_queue else 'hold'
         current_price = data_queue[-2]
+        previous_price = data_queue[-3]
+        if decision == 'buy':
+            total_pnl -= current_price - previous_price
+        elif decision == 'sell':
+            total_pnl += current_price - previous_price
+        print(f"Current PNL: {total_pnl}")
         sio.emit(
             'inference', 
             {
@@ -123,7 +132,7 @@ def threaded_worker():
                 'garch': garch_pred, 
                 'arima': arima_pred,
                 'decision': decision
-            }, 
+            },
             namespace='/schedule'
         )
         time.sleep(60)
@@ -132,7 +141,6 @@ connected = False
 
 if __name__ == "__main__":
     initialize_ticker(ticker)
-    # sio.connect(host, namespaces=['/schedule'])
     while not connected:
         try:
             sio.connect(host, namespaces=['/schedule'])

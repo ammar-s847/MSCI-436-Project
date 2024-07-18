@@ -28,6 +28,9 @@ from nlp.news_sentiment import (
     analyze_sentiment,
 )
 
+TICKER_FILEPATH = './metadata/TICKER.txt'
+SENTIMENT_FILEPATH = './metadata/OVERALL_SENTIMENT.txt'
+
 app = Flask(__name__)
 CORS(app)
 cors = CORS(app, resource={
@@ -52,10 +55,10 @@ conn_params = {
 def get_db_connection():
     return psycopg2.connect(**conn_params)
 
-with open('TICKER.txt', 'r') as file:
+with open(TICKER_FILEPATH, 'r') as file:
     ticker = file.read().strip()
 
-with open('OVERALL_SENTIMENT.txt', 'r') as file:
+with open(SENTIMENT_FILEPATH, 'r') as file:
     overall_sentiment = file.read().strip()
 
 def initialize_ticker(ticker: str):
@@ -81,7 +84,7 @@ def new_ticker():
     data = request.json
     ticker = data['ticker']
     train_ticker(ticker)
-    with open('TICKER.txt', 'w') as file:
+    with open(TICKER_FILEPATH, 'w') as file:
         file.write(ticker)
     initialize_ticker(ticker)
     socket_app.emit('update_ticker', {'data': ticker}, namespace='/schedule')
@@ -90,20 +93,20 @@ def new_ticker():
 @app.route('/news_sentiment', methods=['GET'])
 @cross_origin()
 def news_sentiment():
-    with open('TICKER.txt', 'r') as file:
+    with open(TICKER_FILEPATH, 'r') as file:
         ticker = file.read().strip()
     news_data = load_news_data(ticker)
     company_name = get_company_name(ticker)
     sentiment_analysis = analyze_sentiment(news_data, ticker, company_name)
     overall_sentiment = sentiment_analysis['overall_sentiment']
-    with open('OVERALL_SENTIMENT.txt', 'w') as file:
+    with open(SENTIMENT_FILEPATH, 'w') as file:
         file.write(overall_sentiment)
     return jsonify(sentiment_analysis), 200
 
 @app.route('/company_name', methods=['GET'])
 @cross_origin()
 def company_name():
-    with open('TICKER.txt', 'r') as file:
+    with open(TICKER_FILEPATH, 'r') as file:
         ticker = file.read().strip()
     company_name = get_company_name(ticker)
     return jsonify({"company_name": company_name}), 200
@@ -111,7 +114,7 @@ def company_name():
 @app.route('/volatility', methods=['GET'])
 @cross_origin()
 def volatility():
-    with open('TICKER.txt', 'r') as file:
+    with open(TICKER_FILEPATH, 'r') as file:
         ticker = file.read().strip()
     return jsonify({
         "historical_volatility": get_historical_volatility(ticker),
