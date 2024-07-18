@@ -56,7 +56,7 @@ const Dashboard = forwardRef(
           code = 's';
           break;
         default:
-          code = ''; // Handle unexpected values, if necessary
+          code = ''; 
       }
     
       return code;
@@ -282,7 +282,7 @@ const Dashboard = forwardRef(
             style={{ border: "none" }}
           />
         </Grid2>
-        <Grid2 sx={{ marginTop: "2rem" }} container spacing={4}>
+        <Grid2 sx={{ marginTop: "2rem" }} container spacing={2}>
           <Grid2 xs={6} md={4}>
             <ArimaComp refresh={tickerName}/>
           </Grid2>

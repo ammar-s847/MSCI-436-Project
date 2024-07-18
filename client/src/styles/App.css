@@ -44,6 +44,7 @@ p {
 }
 
 .title {
-  font-size: 3em;
+  font-size: 3.5em;
   color: #ffffff;
+  padding-bottom: 5px;
 }

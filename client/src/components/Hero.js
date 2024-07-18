@@ -47,7 +47,7 @@ const Hero = ({ onSearchComplete, showDashboard, dashboardRef, tickerName }) => 
     <main className="App-main">
       {hideTitle && <h1 className="title">Welcome to Stocker!</h1>}
       <p className="hero-welcome">
-        Search for your favourite stocks and make smarter decisions
+        Search for your favourite stock tickers and make smarter decisions
       </p>
       <form className="search-form" onSubmit={handleSearch}>
         <input
