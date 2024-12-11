@@ -1,4 +1,4 @@
-# MSCI 436 Decision Support Systems
+# Financial Sentiment Analysis and Time series
 
 ## Finnhub API Key is required to be added to .env file
 https://finnhub.io/
